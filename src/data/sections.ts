@@ -44,7 +44,7 @@ export const SECTIONS: SectionData[] = [
       },
       {
         scrollStart: 0.3,
-        scrollEnd: 0.72,
+        scrollEnd: 0.55,
         alignment: 'left',
         headline: 'Built to\nship.',
         subheadline: 'Three years across the stack',
@@ -52,7 +52,7 @@ export const SECTIONS: SectionData[] = [
           'MERN, Next.js, Python, PostgreSQL. Architected platforms for ONGC drilling operations and hospital collaboration scoring. From schema design to production deploy.',
       },
       {
-        scrollStart: 0.72,
+        scrollStart: 0.55,
         scrollEnd: 1.0,
         alignment: 'right',
         headline: 'Every commit\nis a decision.',
@@ -72,7 +72,7 @@ export const SECTIONS: SectionData[] = [
     phases: [
       {
         scrollStart: 0,
-        scrollEnd: 0.28,
+        scrollEnd: 0.45,
         alignment: 'left',
         headline: 'EMBEDDED.\nWIRELESS.\nLIVE.',
         subheadline: 'INSIDE THE LOOP',
@@ -82,8 +82,8 @@ export const SECTIONS: SectionData[] = [
         accentColor: '#E8002D',
       },
       {
-        scrollStart: 0.28,
-        scrollEnd: 0.7,
+        scrollStart: 0.45,
+        scrollEnd: 0.78,
         alignment: 'left',
         headline: 'Every wire\nis a decision.',
         subheadline: 'DD ROBOCON',
@@ -91,7 +91,7 @@ export const SECTIONS: SectionData[] = [
           'Competitive robotics at the national level. Design, fabrication, embedded firmware. Hardware that has to perform on stage when it matters.',
       },
       {
-        scrollStart: 0.7,
+        scrollStart: 0.78,
         scrollEnd: 1.0,
         alignment: 'right',
         headline: 'The fastest\nloop wins.',
@@ -111,7 +111,7 @@ export const SECTIONS: SectionData[] = [
     phases: [
       {
         scrollStart: 0,
-        scrollEnd: 0.3,
+        scrollEnd: 0.5,
         alignment: 'center',
         headline: 'DATA.\nMODELS.\nSCALE.',
         subheadline: 'BUILT TO PRODUCTION',
@@ -121,8 +121,8 @@ export const SECTIONS: SectionData[] = [
         accentColor: '#F5C518',
       },
       {
-        scrollStart: 0.3,
-        scrollEnd: 0.72,
+        scrollStart: 0.5,
+        scrollEnd: 0.78,
         alignment: 'left',
         headline: 'From PDF\nto pipeline.',
         subheadline: 'WELLANALYSIS — ONGC',
@@ -130,7 +130,7 @@ export const SECTIONS: SectionData[] = [
           'Watchdog ingests daily drilling reports. pdfplumber and regex extract unstructured tables. PostgreSQL normalises. Streamlit surfaces 40+ KPIs per well to executives.',
       },
       {
-        scrollStart: 0.72,
+        scrollStart: 0.78,
         scrollEnd: 1.0,
         alignment: 'right',
         headline: 'Local models.\nReal answers.',
