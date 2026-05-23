@@ -204,6 +204,8 @@ function PhaseBlock({
     maxWidth: 'min(560px, 60vw)',
   };
 
+  let xOffset: string | number = 0;
+
   if (alignment === 'left') {
     containerStyle.left = '40px';
     containerStyle.bottom = '15vh';
@@ -217,13 +219,13 @@ function PhaseBlock({
   } else {
     containerStyle.left = '50%';
     containerStyle.bottom = '12vh';
-    containerStyle.transform = 'translateX(-50%)';
     containerStyle.alignItems = 'center';
     containerStyle.textAlign = 'center';
+    xOffset = '-50%';
   }
 
   return (
-    <motion.div style={{ ...containerStyle, opacity, y }}>
+    <motion.div style={{ ...containerStyle, opacity, y, x: xOffset }}>
       {phase.subheadline && (
         <span
           style={{
