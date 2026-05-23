@@ -83,7 +83,7 @@ export const SECTIONS: SectionData[] = [
       },
       {
         scrollStart: 0.45,
-        scrollEnd: 0.78,
+        scrollEnd: 0.70,
         alignment: 'left',
         headline: 'Every wire\nis a decision.',
         subheadline: 'DD ROBOCON',
@@ -91,7 +91,7 @@ export const SECTIONS: SectionData[] = [
           'Competitive robotics at the national level. Design, fabrication, embedded firmware. Hardware that has to perform on stage when it matters.',
       },
       {
-        scrollStart: 0.78,
+        scrollStart: 0.70,
         scrollEnd: 1.0,
         alignment: 'right',
         headline: 'The fastest\nloop wins.',
