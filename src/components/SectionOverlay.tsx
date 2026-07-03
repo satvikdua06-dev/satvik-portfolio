@@ -48,6 +48,7 @@ export default function SectionOverlay({ sectionProgress, section }: Props) {
                 fontSize: '13px',
                 letterSpacing: '0.4em',
                 opacity: 0.7,
+                textShadow: '0 0 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)',
               }}
               className="text-white uppercase"
             >
@@ -66,6 +67,7 @@ export default function SectionOverlay({ sectionProgress, section }: Props) {
                 fontSize: '13px',
                 letterSpacing: '0.4em',
                 opacity: 0.7,
+                textShadow: '0 0 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)',
               }}
               className="text-white uppercase"
             >
@@ -156,9 +158,10 @@ export default function SectionOverlay({ sectionProgress, section }: Props) {
                 fontFamily: 'var(--font-display)',
                 fontSize: '12px',
                 letterSpacing: '0.35em',
-                color: 'rgba(255,255,255,0.4)',
+                color: 'rgba(255,255,255,0.85)',
                 textAlign: 'right',
                 textTransform: 'uppercase',
+                textShadow: '0 0 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)',
               }}
             >
               {item}

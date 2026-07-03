@@ -73,9 +73,9 @@ export default function ScrollEngine({ sections }: Props) {
             key={section.id}
             section={section}
             sectionProgress={progresses[i]}
-            globalProgress={scrollYProgress}
             sectionIndex={i}
             isFirst={i === 0}
+            isLast={i === sections.length - 1}
             triggerLoad={triggerLoads[i]}
             onCriticalReady={
               i === 0
