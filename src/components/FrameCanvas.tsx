@@ -25,6 +25,7 @@ export default function FrameCanvas({
   const currentIndexRef = useRef<number>(0);
   const pendingIndexRef = useRef<number>(0);
   const rafIdRef = useRef<number | null>(null);
+  const pollRafRef = useRef<number | null>(null);
   const dprRef = useRef<number>(1);
   const sizeRef = useRef<{ vw: number; vh: number }>({ vw: 0, vh: 0 });
   const gcDoneRef = useRef(false);
@@ -90,17 +91,48 @@ export default function FrameCanvas({
     }
   };
 
+  // Fix A: check img.complete BEFORE advancing currentIndexRef.
+  // If the frame is not yet decoded, retry next rAF tick without locking
+  // currentIndexRef — so the next tick will attempt the draw again.
   const scheduleDraw = (index: number) => {
     pendingIndexRef.current = index;
     if (rafIdRef.current !== null) return;
-    rafIdRef.current = requestAnimationFrame(() => {
+
+    const tick = () => {
       rafIdRef.current = null;
+      if (!canvasRef.current) return; // guard against post-unmount callbacks
       const next = pendingIndexRef.current;
-      if (next !== currentIndexRef.current) {
-        currentIndexRef.current = next;
-        drawFrame(next);
+      const img = imagesRef.current[next];
+      if (!img || !img.complete || !img.naturalWidth) {
+        // Frame not yet decoded — retry without advancing currentIndexRef
+        rafIdRef.current = requestAnimationFrame(tick);
+        return;
       }
-    });
+      if (next === currentIndexRef.current) return;
+      currentIndexRef.current = next;
+      drawFrame(next);
+    };
+
+    rafIdRef.current = requestAnimationFrame(tick);
+  };
+
+  // Fix C: poll loop that resets currentIndexRef while frames are still
+  // loading. Ensures any newly decoded frame triggers a redraw on the next
+  // scheduleDraw call, even if the user has stopped scrolling.
+  const startPendingPoll = () => {
+    if (pollRafRef.current !== null) cancelAnimationFrame(pollRafRef.current);
+    const check = () => {
+      const allLoaded = imagesRef.current.every(
+        (img) => img && img.complete && img.naturalWidth > 0
+      );
+      if (!allLoaded) {
+        currentIndexRef.current = -1;
+        pollRafRef.current = requestAnimationFrame(check);
+      } else {
+        pollRafRef.current = null;
+      }
+    };
+    pollRafRef.current = requestAnimationFrame(check);
   };
 
   const loadFrames = (startIndex: number, endIndex: number) => {
@@ -111,6 +143,16 @@ export default function FrameCanvas({
       const capturedI = i;
       const onLoad = () => {
         if (capturedI === 0) drawFrame(0);
+        // Fix B: if this is the frame the canvas is currently stuck on,
+        // clear the guard so the next scheduleDraw call redraws it.
+        const needed = Math.min(
+          Math.round(Math.max(0, sectionProgress.get()) * (frameCount - 1)),
+          frameCount - 1
+        );
+        if (capturedI === needed && currentIndexRef.current === capturedI) {
+          currentIndexRef.current = -1;
+          drawFrame(capturedI);
+        }
       };
       if (img.complete && img.naturalWidth > 0) {
         onLoad();
@@ -139,8 +181,18 @@ export default function FrameCanvas({
           if (capturedI === 0) drawFrame(0);
           const count = ++criticalLoadedRef.current;
           onCriticalReady?.(count);
+          // Fix B: unblock if stuck on this critical frame
+          const needed = Math.min(
+            Math.round(Math.max(0, sectionProgress.get()) * (frameCount - 1)),
+            frameCount - 1
+          );
+          if (capturedI === needed && currentIndexRef.current === capturedI) {
+            currentIndexRef.current = -1;
+            drawFrame(capturedI);
+          }
           if (count === CRITICAL_END + 1) {
             loadFrames(CRITICAL_END + 1, frameCount - 1);
+            startPendingPoll(); // Fix C
           }
         };
         if (img.complete && img.naturalWidth > 0) {
@@ -164,6 +216,10 @@ export default function FrameCanvas({
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
+      if (pollRafRef.current !== null) {
+        cancelAnimationFrame(pollRafRef.current);
+        pollRafRef.current = null;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameCount, framesPath]);
@@ -172,6 +228,7 @@ export default function FrameCanvas({
   useEffect(() => {
     if (triggerLoad === undefined || !triggerLoad) return;
     loadFrames(0, frameCount - 1);
+    startPendingPoll(); // Fix C
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerLoad, frameCount, framesPath]);
 
