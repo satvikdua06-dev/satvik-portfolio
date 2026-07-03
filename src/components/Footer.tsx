@@ -38,7 +38,7 @@ export default function Footer() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
           <a
-            href="mailto:24ucc015@lnmiit.ac.in"
+            href="mailto:satvikdua06@gmail.com"
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: '11px',
@@ -51,7 +51,7 @@ export default function Footer() {
             }}
             className="hover:!text-white"
           >
-            24ucc015@lnmiit.ac.in
+            satvikdua06@gmail.com
           </a>
           <a
             href="https://www.linkedin.com/in/satvikdua"

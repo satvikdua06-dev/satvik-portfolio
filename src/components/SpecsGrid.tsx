@@ -2,7 +2,7 @@ const ITEMS = [
   { label: 'INFERENCE LATENCY', value: '<3ms', sub: 'ONNX Runtime · CUDA 12.6 · RigVision' },
   { label: 'EMPLOYEES SERVED', value: '20K', sub: 'ONGC LMS — designed capacity' },
   { label: 'WORKFLOW STAGES', value: '11', sub: 'STI Portal state machine' },
-  { label: 'LIVE CAMERAS', value: '4', sub: 'Simultaneous tracking · RigVision' },
+  { label: 'EMPLOYEES MAPPED', value: '500+', sub: 'CompetenceGraph · Neo4j · ONGC' },
 ];
 
 export default function SpecsGrid() {

@@ -5,8 +5,8 @@ type Project = {
   title: string;
   tag: string;
   stack: string[];
-  description: string;
-  stats: [string, string];
+  bullets: string[];
+  stat: string;
 };
 
 const PROJECTS: Project[] = [
@@ -14,55 +14,79 @@ const PROJECTS: Project[] = [
     number: '01',
     title: 'RigVision',
     tag: 'ONGC Internship · Computer Vision · 2025',
-    stack: ['YOLOv8', 'BoT-SORT', 'ONNX', 'CUDA 12.6', 'ResNet18', 'FastAPI', 'React', 'Three.js', 'Redis', 'Docker', 'OpenCV', 'RTMPose'],
-    description:
-      'Multi-camera PPE and safety monitoring system for ONGC drilling rigs. YOLOv8 + BoT-SORT tracking across 4 simultaneous feeds. ResNet18 + k-NN few-shot PPE classifier with pose-guided ROI extraction and temporal smoothing. ONNX Runtime on CUDA 12.6 with a React/Three.js SCADA dashboard and Modbus sensor simulator.',
-    stats: ['<3ms inference · ONNX + CUDA', '4 cameras · simultaneous tracking'],
+    stack: ['YOLOv8', 'BoT-SORT', 'ONNX', 'CUDA 12.6', 'ResNet18', 'FastAPI', 'React', 'Three.js', 'Redis', 'Docker', 'OpenCV'],
+    bullets: [
+      'Multi-camera PPE and safety monitoring system across 4 simultaneous feeds on an active ONGC drilling rig. YOLOv8 detection with BoT-SORT multi-object tracking at 30fps per camera.',
+      'Pose-guided PPE classifier: RTMPose extracts body keypoints, ROI crops isolate hardhat/vest/goggle zones, ResNet18 generates embeddings matched to a k-NN gallery with supermajority voting and temporal smoothing. CLIP was benchmarked and abandoned — ResNet18 generalised better on small safety-equipment crops.',
+      'ONNX Runtime on CUDA 12.6 cuts per-frame inference to under 3ms. GPU acceleration via provider priority: CUDAExecutionProvider → CPUExecutionProvider fallback.',
+      'React + Three.js SCADA-style dashboard with live sensor telemetry. Modbus sensor simulator for offline testing. Redis pub/sub for real-time data streaming. Docker Compose deployment.',
+    ],
+    stat: '<3ms inference · 4 simultaneous cameras',
   },
   {
     number: '02',
     title: 'Notarium',
     tag: 'Personal Project · Marketplace · Deployed',
     stack: ['Node.js', 'Express', 'TypeScript', 'React', 'Vite', 'Supabase', 'Razorpay', 'PDF watermarking', 'Render', 'Vercel'],
-    description:
-      'Notes-selling marketplace with purchase-gated content delivery. Server-side PDF watermarking embeds the buyer\'s identity into each download. Razorpay webhook fulfillment triggers access. Supabase storage backend, Node/Express/TypeScript API, React + Vite frontend. Live on Render + Vercel.',
-    stats: ['Webhook-driven · zero manual fulfillment', 'Deployed · Render + Vercel + Supabase'],
+    bullets: [
+      'Notes-selling marketplace with full purchase lifecycle: upload, preview, purchase, download. Server-side PDF watermarking embeds the buyer\'s unique ID into every downloaded document — leaks are traceable back to the purchaser.',
+      'Razorpay webhook fulfillment: payment events trigger access grant in the backend, unlocking the purchase-gated PDF viewer. Zero manual fulfillment — the entire flow is automated.',
+      'Supabase storage backend with signed URL generation for time-limited secure access. Node/Express/TypeScript API. React + Vite frontend with an in-browser PDF viewer that blocks right-click and keyboard shortcuts.',
+      'Deployed across three platforms: Render (API), Vercel (frontend), Supabase (storage + auth). CI via GitHub Actions.',
+    ],
+    stat: 'Deployed · webhook-driven zero-touch fulfillment',
   },
   {
     number: '03',
     title: 'CompetenceGraph',
-    tag: 'ONGC Internship · HR Systems · Neo4j',
-    stack: ['Neo4j', 'Ollama', 'LLM', 'FastAPI', 'React', 'PostgreSQL', 'Docker'],
-    description:
-      'Neo4j-backed competency management system mapping ONGC employees to positions via skills. Offline LLM pipeline (Ollama) extracts binary competence flags from appraisal narratives. Threshold-registry pattern keeps runtime queries fully deterministic. FastAPI REST layer with React frontend.',
-    stats: ['500+ employees mapped', 'Offline LLM · no external API calls'],
+    tag: 'ONGC Internship · HR Systems · Neo4j · 2025',
+    stack: ['Neo4j', 'Ollama', 'FastAPI', 'React', 'PostgreSQL', 'Docker'],
+    bullets: [
+      'Neo4j-backed competency management system for ONGC HR. Models employees, positions, and required skills as a property graph. Maps 500+ employees to their current and target positions via binary competence edges.',
+      'Offline LLM pipeline using Ollama reads annual appraisal narratives and extracts structured competency flags — no data leaves the ONGC network, no external API calls. Threshold-registry pattern ensures deterministic runtime query paths regardless of model output variance.',
+      'FastAPI REST layer exposes competency gap queries, skill-to-position matching, and promotion eligibility checks. React frontend with filterable employee-position graph view.',
+      'Docker Compose deployment. PostgreSQL for relational HR data alongside the Neo4j graph store.',
+    ],
+    stat: '500+ employees mapped · fully offline LLM',
   },
   {
     number: '04',
-    title: 'STI Portal',
-    tag: 'LNMIIT · Full-Stack · 1000+ Users',
-    stack: ['MongoDB', 'Express', 'React', 'Node.js', 'PostgreSQL', 'JWT', 'RBAC', 'Docker', 'Nodemailer'],
-    description:
-      'Internship lifecycle management platform for LNMIIT covering student applications through final grading. Seven distinct roles with JWT + RBAC access control. Eleven-stage workflow state machine with automated notifications at each transition. MERN stack with PostgreSQL for structured workflow data.',
-    stats: ['7 roles · 11 workflow stages', '1000+ active users'],
+    title: 'WellAnalysis',
+    tag: 'ONGC Internship · ETL Pipeline · Python · 2025',
+    stack: ['Python', 'pdfplumber', 'Pandas', 'Streamlit', 'Watchdog', 'PostgreSQL', 'SQLAlchemy'],
+    bullets: [
+      'Automated ETL pipeline eliminating manual data entry for ONGC drilling operations. A watchdog process monitors an input folder and triggers ingestion the moment a new PDF daily report lands.',
+      'Extraction layer using pdfplumber + regex handles unstructured ONGC report templates — parses metadata headers, dynamic tabular sections (depths, costs, mud weights, material consumption), and multi-page continuation tables.',
+      'Normalised PostgreSQL schema modelled via SQLAlchemy: Areas → Rigs → Wells → Daily Progress Reports. Transactional commits with duplicate-detection guards prevent double ingestion on retry.',
+      'Streamlit dashboard surfaces two views: executive KPI summary per well and a deep-dive interface exposing 40+ operational parameters. Anomaly flagging highlights out-of-range values automatically.',
+    ],
+    stat: '40+ KPIs · PDF → dashboard fully automated',
   },
   {
     number: '05',
     title: 'MedCollaborate',
-    tag: 'Healthcare · Resource Coordination · Dockerized',
-    stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Docker Compose', 'Recharts', 'REST API'],
-    description:
-      'Hospital resource coordination platform with a 7-KPI automated scoring engine that ranks incoming resource requests across 40+ indicators. Configurable weight registry allows administrators to tune scoring without code changes. Recharts analytics dashboard. Fully containerised with Docker Compose.',
-    stats: ['40+ KPI indicators', 'Configurable · no-code weight tuning'],
+    tag: 'Healthcare · Resource Coordination · Dockerized · 2025',
+    stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Docker Compose', 'Recharts', 'GridFS', 'JWT', 'Multer'],
+    bullets: [
+      'Hospital resource coordination platform for evaluating and ranking collaboration prospects across multi-dimensional criteria. Built to handle large accreditation document submissions alongside structured scoring data.',
+      'Modular scoring engine in Node.js applies dynamic weight allocation across 7+ KPI parameters. Weights are configurable at runtime via an admin panel — no redeployment needed to adjust scoring policy.',
+      'High-throughput file ingestion via Multer + Streamifier + MongoDB GridFS handles large PDF accreditation documents without buffering the entire file in memory.',
+      'Dual-frontend architecture: a public-facing onboarding flow and a secured admin interface with separate JWT-gated access and independent security postures. Containerised with Docker Compose.',
+    ],
+    stat: '7 KPI parameters · configurable weight registry',
   },
   {
     number: '06',
-    title: 'WellAnalysis',
-    tag: 'ONGC Internship · ETL Pipeline · Python',
-    stack: ['Python', 'pdfplumber', 'Pandas', 'Streamlit', 'Watchdog', 'PostgreSQL'],
-    description:
-      'Automated ETL pipeline for ONGC drilling report processing. A watchdog process monitors an input folder for incoming PDF daily reports, extracts structured drilling metrics using pdfplumber, flags anomalies, and pushes cleaned data to a live Streamlit dashboard. Pandas data layer with configurable extraction schemas per report template.',
-    stats: ['PDF → dashboard · fully automated', 'Anomaly flagging · configurable schemas'],
+    title: 'STI Portal',
+    tag: 'LNMIIT · Full-Stack · 1000+ Users · 2024',
+    stack: ['React', 'Node.js', 'MongoDB', 'PostgreSQL', 'JWT', 'RBAC', 'Docker', 'Nodemailer', 'Vercel'],
+    bullets: [
+      'End-to-end internship lifecycle management for LNMIIT covering student applications through final grading and record archival. Live with 1000+ active users across student, faculty, and administrative roles.',
+      'Seven distinct user roles (student, guide, coordinator, HOD, director, admin, external examiner) with JWT + RBAC access control. Each role sees a different interface and action set — no shared permission bleed.',
+      'State-machine-driven backend managing 11-stage application transitions (draft → submitted → approved → allocated → midterm → final → graded) with full audit trail and automated email notifications at each stage.',
+      'Multi-step application wizard with debounced auto-save prevents data loss during long submissions. External evaluators receive tokenised magic links — secure grading access without requiring account creation.',
+    ],
+    stat: '7 roles · 11 workflow stages · 1000+ users',
   },
 ];
 
@@ -178,13 +202,7 @@ export default function ProjectsGrid() {
                 >
                   {p.tag}
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '8px',
-                  }}
-                >
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {p.stack.map((tech) => (
                     <span
                       key={tech}
@@ -204,43 +222,47 @@ export default function ProjectsGrid() {
                 </div>
               </div>
 
-              {/* Description + Stats */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '15px',
-                    lineHeight: 1.65,
-                    color: 'rgba(255,255,255,0.7)',
-                  }}
-                >
-                  {p.description}
-                </p>
+              {/* Bullets + stat row */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {p.bullets.map((b, j) => (
+                    <li
+                      key={j}
+                      style={{
+                        fontFamily: 'var(--font-body)',
+                        fontSize: '15px',
+                        lineHeight: 1.65,
+                        color: 'rgba(255,255,255,0.7)',
+                        paddingLeft: '20px',
+                        position: 'relative',
+                      }}
+                    >
+                      <span
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: '11px',
+                          width: '8px',
+                          height: '1px',
+                          background: 'var(--accent-red)',
+                        }}
+                      />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
                 <div
                   style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '16px',
                     borderTop: '1px solid rgba(255,255,255,0.08)',
-                    paddingTop: '20px',
+                    paddingTop: '16px',
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '10px',
+                    letterSpacing: '0.25em',
+                    color: 'var(--accent-silver)',
+                    textTransform: 'uppercase',
                   }}
                 >
-                  {p.stats.map((stat, j) => (
-                    <div key={j}>
-                      <div
-                        style={{
-                          fontFamily: 'var(--font-display)',
-                          fontSize: '10px',
-                          letterSpacing: '0.2em',
-                          color: 'var(--accent-silver)',
-                          textTransform: 'uppercase',
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {stat}
-                      </div>
-                    </div>
-                  ))}
+                  {p.stat}
                 </div>
               </div>
             </article>

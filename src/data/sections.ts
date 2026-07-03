@@ -72,7 +72,7 @@ export const SECTIONS: SectionData[] = [
     phases: [
       {
         scrollStart: 0,
-        scrollEnd: 0.45,
+        scrollEnd: 0.35,
         alignment: 'left',
         headline: 'SCHEMA\nTO\nDEPLOY.',
         subheadline: 'STI PORTAL',
@@ -82,8 +82,8 @@ export const SECTIONS: SectionData[] = [
         accentColor: '#E8002D',
       },
       {
-        scrollStart: 0.45,
-        scrollEnd: 0.70,
+        scrollStart: 0.35,
+        scrollEnd: 0.60,
         alignment: 'left',
         headline: 'MEDCOLLABORATE',
         subheadline: 'HOSPITAL RESOURCE COORDINATION',
@@ -91,7 +91,7 @@ export const SECTIONS: SectionData[] = [
           'Hospital resource coordination platform. 7-KPI scoring engine ranks resource requests across 40+ indicators. Docker Compose deployment. Recharts analytics dashboard. Automated scoring pipeline with configurable weight registry.',
       },
       {
-        scrollStart: 0.70,
+        scrollStart: 0.60,
         scrollEnd: 1.0,
         alignment: 'right',
         headline: 'WELLANALYSIS',
@@ -107,7 +107,7 @@ export const SECTIONS: SectionData[] = [
     framesPath: '/frames/section3',
     stickyHeight: '500vh',
     accentLabel: '03 — INTELLIGENCE',
-    sideRailItems: ['NEO4J', 'OLLAMA', 'RAG', 'RAZORPAY', 'SUPABASE', 'SCORM', 'ARGON2'],
+    sideRailItems: ['NEO4J', 'OLLAMA', 'FASTAPI', 'REACT', 'DOCKER', 'LLM'],
     phases: [
       {
         scrollStart: 0,
@@ -133,10 +133,10 @@ export const SECTIONS: SectionData[] = [
         scrollStart: 0.78,
         scrollEnd: 1.0,
         alignment: 'right',
-        headline: 'ONGC LMS',
-        subheadline: 'INTERNAL LMS · 20K EMPLOYEES',
+        headline: 'COMPETENCEGRAPH',
+        subheadline: 'HR INTELLIGENCE — ONGC',
         paragraph:
-          'Internal LMS designed for 20,000 ONGC employees. FastAPI + React + PostgreSQL + Redis. Sequential section locking, timed quizzes, SCORM/xAPI/cmi5 support, email + certificate pipeline. Argon2 password hashing, httpOnly cookies, CSRF protection, signed URLs.',
+          'Neo4j maps 500+ ONGC employees to positions through a binary competency model. An offline Ollama pipeline reads appraisal narratives and extracts structured competency flags — no external API calls, no data leaving the network. A threshold-registry pattern keeps every runtime query fully deterministic. FastAPI REST layer, React frontend, Docker Compose deployment.',
       },
     ],
   },
