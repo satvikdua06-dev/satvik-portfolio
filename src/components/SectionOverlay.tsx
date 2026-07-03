@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, MotionValue, useTransform } from 'framer-motion';
+import { motion, MotionValue, useTransform, useReducedMotion } from 'framer-motion';
 import { SectionData, ScrollPhase } from '@/data/sections';
 
 type Props = {
@@ -9,6 +9,8 @@ type Props = {
 };
 
 export default function SectionOverlay({ sectionProgress, section }: Props) {
+  const prefersReduced = useReducedMotion();
+
   const heroTitleOpacity = useTransform(
     sectionProgress,
     [0, 0.08, 0.22, 0.3],
@@ -76,7 +78,7 @@ export default function SectionOverlay({ sectionProgress, section }: Props) {
       {/* HERO TITLE */}
       {section.heroTitle && (
         <motion.div
-          style={{ opacity: heroTitleOpacity }}
+          style={{ opacity: prefersReduced ? 1 : heroTitleOpacity }}
           className="absolute inset-0 flex items-center justify-center flex-col"
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           {...({ ['data-z']: 8 } as any)}
@@ -123,14 +125,21 @@ export default function SectionOverlay({ sectionProgress, section }: Props) {
       {section.phases.map((phase, i) => {
         const isEmpty = !phase.headline && !phase.subheadline && !phase.paragraph;
         if (isEmpty) return null;
-        return <PhaseBlock key={i} phase={phase} sectionProgress={sectionProgress} />;
+        return (
+          <PhaseBlock
+            key={i}
+            phase={phase}
+            sectionProgress={sectionProgress}
+            prefersReduced={prefersReduced}
+          />
+        );
       })}
 
       {/* RIGHT RAIL */}
       {section.sideRailItems.length > 0 && (
         <motion.div
           style={{
-            opacity: railOpacity,
+            opacity: prefersReduced ? 1 : railOpacity,
             position: 'absolute',
             right: '40px',
             top: '50%',
@@ -157,7 +166,6 @@ export default function SectionOverlay({ sectionProgress, section }: Props) {
           ))}
         </motion.div>
       )}
-
     </>
   );
 }
@@ -165,9 +173,11 @@ export default function SectionOverlay({ sectionProgress, section }: Props) {
 function PhaseBlock({
   phase,
   sectionProgress,
+  prefersReduced,
 }: {
   phase: ScrollPhase;
   sectionProgress: MotionValue<number>;
+  prefersReduced?: boolean | null;
 }) {
   const mid = (phase.scrollStart + phase.scrollEnd) / 2;
   const opacity = useTransform(
@@ -225,7 +235,14 @@ function PhaseBlock({
   }
 
   return (
-    <motion.div style={{ ...containerStyle, opacity, y, x: xOffset }}>
+    <motion.div
+      style={{
+        ...containerStyle,
+        opacity: prefersReduced ? 1 : opacity,
+        y: prefersReduced ? 0 : y,
+        x: xOffset,
+      }}
+    >
       {phase.subheadline && (
         <span
           style={{

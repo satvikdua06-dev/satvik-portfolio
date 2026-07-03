@@ -1,3 +1,5 @@
+'use client';
+
 type Project = {
   number: string;
   title: string;
@@ -93,6 +95,7 @@ export default function ProjectsGrid() {
           {PROJECTS.map((p, i) => (
             <article
               key={p.number}
+              className="project-card md:!grid-cols-[100px_minmax(0,1fr)_minmax(0,1.4fr)]"
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'minmax(0, 1fr)',
@@ -101,8 +104,25 @@ export default function ProjectsGrid() {
                 borderTop:
                   i === 0 ? '1px solid rgba(255,255,255,0.1)' : 'none',
                 borderBottom: '1px solid rgba(255,255,255,0.1)',
+                transformStyle: 'preserve-3d',
+                transition: 'transform 0.12s ease-out, box-shadow 0.12s ease-out',
+                willChange: 'transform',
+                position: 'relative',
               }}
-              className="md:!grid-cols-[100px_minmax(0,1fr)_minmax(0,1.4fr)]"
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                e.currentTarget.style.transform = `perspective(800px) rotateY(${x * 12}deg) rotateX(${-y * 10}deg) translateZ(4px)`;
+                e.currentTarget.style.boxShadow = `${x * -20}px ${y * -20}px 40px rgba(0,0,0,0.4)`;
+                e.currentTarget.style.setProperty('--mx', `${(x + 0.5) * 100}%`);
+                e.currentTarget.style.setProperty('--my', `${(y + 0.5) * 100}%`);
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform =
+                  'perspective(800px) rotateY(0deg) rotateX(0deg) translateZ(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               {/* Number */}
               <div

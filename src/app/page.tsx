@@ -1,26 +1,31 @@
-'use client';
-
-import { useRef } from 'react';
-import { useScroll, useTransform } from 'framer-motion';
+import type { Metadata } from 'next';
 import { SECTIONS } from '@/data/sections';
-import Navbar from '@/components/Navbar';
-import SectionBlock from '@/components/SectionBlock';
+import ScrollEngine from '@/components/ScrollEngine';
 import ProjectsGrid from '@/components/ProjectsGrid';
 import SpecsGrid from '@/components/SpecsGrid';
 import Footer from '@/components/Footer';
 
+export const metadata: Metadata = {
+  title: 'Satvik Dua — Software Engineer',
+  description:
+    'Full-stack, AI/ML, and robotics engineer. RigVision, CompetenceGraph, Notarium.',
+  openGraph: {
+    title: 'Satvik Dua — Software Engineer',
+    description: 'Full-stack, AI/ML, and robotics engineer.',
+    type: 'website',
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Satvik Dua',
+  jobTitle: 'Software Engineer',
+  description: 'Full-stack, AI/ML, and robotics engineer.',
+  email: 'satvikdua06@gmail.com',
+};
+
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
-
-  const s1Progress = useTransform(scrollYProgress, [0, 0.385], [0, 1]);
-  const s2Progress = useTransform(scrollYProgress, [0.308, 0.692], [0, 1]);
-  const s3Progress = useTransform(scrollYProgress, [0.615, 1.0], [0, 1]);
-  const progresses = [s1Progress, s2Progress, s3Progress];
-
   return (
     <main
       style={{
@@ -29,19 +34,12 @@ export default function Home() {
         minHeight: '100vh',
       }}
     >
-      <Navbar />
-      <div ref={containerRef} style={{ height: '1300vh', position: 'relative' }}>
-        {SECTIONS.map((section, i) => (
-          <SectionBlock
-            key={section.id}
-            section={section}
-            sectionProgress={progresses[i]}
-            globalProgress={scrollYProgress}
-            sectionIndex={i}
-            isFirst={i === 0}
-          />
-        ))}
-      </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <h1 className="sr-only">Satvik Dua — Software Engineer</h1>
+      <ScrollEngine sections={SECTIONS} />
       <div
         style={{
           position: 'relative',

@@ -11,6 +11,9 @@ type Props = {
   globalProgress: MotionValue<number>;
   sectionIndex: number;
   isFirst: boolean;
+  triggerLoad?: boolean;
+  onCriticalReady?: (n: number) => void;
+  isActive?: boolean;
 };
 
 const ENTRY_RANGES: Record<number, [number, number]> = {
@@ -24,6 +27,9 @@ export default function SectionBlock({
   globalProgress,
   sectionIndex,
   isFirst,
+  triggerLoad,
+  onCriticalReady,
+  isActive,
 }: Props) {
   const range = ENTRY_RANGES[sectionIndex] ?? [0, 0];
 
@@ -71,6 +77,9 @@ export default function SectionBlock({
               sectionProgress={sectionProgress}
               frameCount={section.frameCount}
               framesPath={section.framesPath}
+              triggerLoad={triggerLoad}
+              onCriticalReady={onCriticalReady}
+              isActive={isActive}
             />
           </div>
           <div

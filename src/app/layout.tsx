@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Rajdhani } from "next/font/google";
 import "./globals.css";
+import CursorDot from "@/components/CursorDot";
 
 const barlowCondensed = Barlow_Condensed({
-  weight: ["700", "800"],
+  weight: ["400", "700", "800"],
   variable: "--font-big-shoulders",
   subsets: ["latin"],
 });
@@ -29,7 +30,10 @@ export default function RootLayout({
       lang="en"
       className={`${barlowCondensed.variable} ${rajdhani.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <CursorDot />
+        {children}
+      </body>
     </html>
   );
 }

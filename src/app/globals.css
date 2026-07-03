@@ -25,6 +25,23 @@ body {
   color: white;
   font-family: var(--font-body);
   overflow-x: hidden;
+  cursor: none;
+}
+
+@media (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+}
+
+.hidden-on-touch {
+  display: block;
+}
+
+@media (pointer: coarse) {
+  .hidden-on-touch {
+    display: none;
+  }
 }
 
 canvas {
@@ -38,4 +55,22 @@ canvas {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
+}
+
+.project-card {
+  position: relative;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.06),
+    transparent 60%
+  );
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
 }
