@@ -22,15 +22,19 @@ export default function FrameCanvas({
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
-  const currentIndexRef = useRef<number>(0);
-  const pendingIndexRef = useRef<number>(0);
-  const rafIdRef = useRef<number | null>(null);
-  const pollRafRef = useRef<number | null>(null);
+  const currentIndexRef = useRef<number>(-1);
+  const retryRafRef = useRef<number | null>(null);
   const dprRef = useRef<number>(1);
   const sizeRef = useRef<{ vw: number; vh: number }>({ vw: 0, vh: 0 });
   const gcDoneRef = useRef(false);
   const criticalLoadedRef = useRef(0);
   const prefersReduced = useReducedMotion();
+
+  // Keep stable refs to latest values so callbacks don't go stale
+  const sectionProgressRef = useRef(sectionProgress);
+  sectionProgressRef.current = sectionProgress;
+  const frameCountRef = useRef(frameCount);
+  frameCountRef.current = frameCount;
 
   const sizeCanvas = () => {
     const canvas = canvasRef.current;
@@ -72,7 +76,7 @@ export default function FrameCanvas({
     ctx.clearRect(0, 0, vw, vh);
     ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
 
-    const progress = sectionProgress.get();
+    const progress = sectionProgressRef.current.get();
     const nearStart = Math.max(0, 1 - progress / 0.03);
     const nearEnd   = Math.max(0, 1 - (1 - progress) / 0.03);
     const flash = Math.max(nearStart, nearEnd);
@@ -91,48 +95,35 @@ export default function FrameCanvas({
     }
   };
 
-  // Fix A: check img.complete BEFORE advancing currentIndexRef.
-  // If the frame is not yet decoded, retry next rAF tick without locking
-  // currentIndexRef — so the next tick will attempt the draw again.
-  const scheduleDraw = (index: number) => {
-    pendingIndexRef.current = index;
-    if (rafIdRef.current !== null) return;
+  // No-arg scheduleDraw: reads current progress from ref, retries every rAF
+  // until the needed frame is decoded — never advances currentIndexRef until
+  // a draw actually succeeds.
+  const scheduleDraw = () => {
+    if (retryRafRef.current !== null) {
+      cancelAnimationFrame(retryRafRef.current);
+      retryRafRef.current = null;
+    }
+    if (!canvasRef.current) return;
 
-    const tick = () => {
-      rafIdRef.current = null;
-      if (!canvasRef.current) return; // guard against post-unmount callbacks
-      const next = pendingIndexRef.current;
-      const img = imagesRef.current[next];
-      if (!img || !img.complete || !img.naturalWidth) {
-        // Frame not yet decoded — retry without advancing currentIndexRef
-        rafIdRef.current = requestAnimationFrame(tick);
-        return;
-      }
-      if (next === currentIndexRef.current) return;
-      currentIndexRef.current = next;
-      drawFrame(next);
-    };
+    const fc = frameCountRef.current;
+    const progressValue = Math.max(0, Math.min(1, sectionProgressRef.current.get()));
+    const targetIndex = Math.min(Math.round(progressValue * (fc - 1)), fc - 1);
+    const img = imagesRef.current[targetIndex];
 
-    rafIdRef.current = requestAnimationFrame(tick);
-  };
+    // Image not yet decoded — keep retrying each frame without locking currentIndexRef
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      retryRafRef.current = requestAnimationFrame(scheduleDraw);
+      return;
+    }
 
-  // Fix C: poll loop that resets currentIndexRef while frames are still
-  // loading. Ensures any newly decoded frame triggers a redraw on the next
-  // scheduleDraw call, even if the user has stopped scrolling.
-  const startPendingPoll = () => {
-    if (pollRafRef.current !== null) cancelAnimationFrame(pollRafRef.current);
-    const check = () => {
-      const allLoaded = imagesRef.current.every(
-        (img) => img && img.complete && img.naturalWidth > 0
-      );
-      if (!allLoaded) {
-        currentIndexRef.current = -1;
-        pollRafRef.current = requestAnimationFrame(check);
-      } else {
-        pollRafRef.current = null;
-      }
-    };
-    pollRafRef.current = requestAnimationFrame(check);
+    // Image ready but already drawn — nothing to do
+    if (currentIndexRef.current === targetIndex) {
+      return;
+    }
+
+    // Safe to draw
+    currentIndexRef.current = targetIndex;
+    drawFrame(targetIndex);
   };
 
   const loadFrames = (startIndex: number, endIndex: number) => {
@@ -142,16 +133,19 @@ export default function FrameCanvas({
       img.src = `${framesPath}/${i + 1}.webp`;
       const capturedI = i;
       const onLoad = () => {
-        if (capturedI === 0) drawFrame(0);
-        // Fix B: if this is the frame the canvas is currently stuck on,
-        // clear the guard so the next scheduleDraw call redraws it.
-        const needed = Math.min(
-          Math.round(Math.max(0, sectionProgress.get()) * (frameCount - 1)),
-          frameCount - 1
+        if (capturedI === 0 && currentIndexRef.current === -1) drawFrame(0);
+
+        // If this frame is the one currently needed and currentIndexRef is
+        // stuck on it (meaning a prior draw attempt failed before it loaded),
+        // reset the guard and fire a redraw.
+        const fc = frameCountRef.current;
+        const currentlyNeeded = Math.min(
+          Math.round(Math.max(0, sectionProgressRef.current.get()) * (fc - 1)),
+          fc - 1
         );
-        if (capturedI === needed && currentIndexRef.current === capturedI) {
+        if (capturedI === currentlyNeeded && currentIndexRef.current === capturedI) {
           currentIndexRef.current = -1;
-          drawFrame(capturedI);
+          requestAnimationFrame(scheduleDraw);
         }
       };
       if (img.complete && img.naturalWidth > 0) {
@@ -163,81 +157,87 @@ export default function FrameCanvas({
     }
   };
 
-  // Mount: canvas setup + Section 1 critical-first load (25 frames before background load)
+  const loadCriticalThenBackground = () => {
+    const CRITICAL_END = Math.min(24, frameCount - 1);
+    criticalLoadedRef.current = 0;
+
+    for (let i = 0; i <= CRITICAL_END; i++) {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = `${framesPath}/${i + 1}.webp`;
+      const capturedI = i;
+      const onLoad = () => {
+        if (capturedI === 0 && currentIndexRef.current === -1) drawFrame(0);
+
+        const count = ++criticalLoadedRef.current;
+        onCriticalReady?.(count);
+
+        const fc = frameCountRef.current;
+        const currentlyNeeded = Math.min(
+          Math.round(Math.max(0, sectionProgressRef.current.get()) * (fc - 1)),
+          fc - 1
+        );
+        if (capturedI === currentlyNeeded && currentIndexRef.current === capturedI) {
+          currentIndexRef.current = -1;
+          requestAnimationFrame(scheduleDraw);
+        }
+
+        if (count === CRITICAL_END + 1) {
+          loadFrames(CRITICAL_END + 1, frameCount - 1);
+        }
+      };
+      if (img.complete && img.naturalWidth > 0) {
+        onLoad();
+      } else {
+        img.addEventListener('load', onLoad, { once: true });
+      }
+      imagesRef.current[capturedI] = img;
+    }
+  };
+
+  // Mount: canvas setup + Section 1 critical-first load
   useEffect(() => {
     sizeCanvas();
     imagesRef.current = new Array(frameCount).fill(null);
+    currentIndexRef.current = -1;
 
     if (triggerLoad === undefined) {
-      const CRITICAL_END = Math.min(24, frameCount - 1);
-      criticalLoadedRef.current = 0;
-
-      for (let i = 0; i <= CRITICAL_END; i++) {
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = `${framesPath}/${i + 1}.webp`;
-        const capturedI = i;
-        const onLoad = () => {
-          if (capturedI === 0) drawFrame(0);
-          const count = ++criticalLoadedRef.current;
-          onCriticalReady?.(count);
-          // Fix B: unblock if stuck on this critical frame
-          const needed = Math.min(
-            Math.round(Math.max(0, sectionProgress.get()) * (frameCount - 1)),
-            frameCount - 1
-          );
-          if (capturedI === needed && currentIndexRef.current === capturedI) {
-            currentIndexRef.current = -1;
-            drawFrame(capturedI);
-          }
-          if (count === CRITICAL_END + 1) {
-            loadFrames(CRITICAL_END + 1, frameCount - 1);
-            startPendingPoll(); // Fix C
-          }
-        };
-        if (img.complete && img.naturalWidth > 0) {
-          onLoad();
-        } else {
-          img.addEventListener('load', onLoad, { once: true });
-        }
-        imagesRef.current[capturedI] = img;
-      }
+      loadCriticalThenBackground();
     }
 
     const handleResize = () => {
       sizeCanvas();
-      drawFrame(currentIndexRef.current);
+      if (currentIndexRef.current >= 0) drawFrame(currentIndexRef.current);
     };
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (rafIdRef.current !== null) {
-        cancelAnimationFrame(rafIdRef.current);
-        rafIdRef.current = null;
-      }
-      if (pollRafRef.current !== null) {
-        cancelAnimationFrame(pollRafRef.current);
-        pollRafRef.current = null;
+      if (retryRafRef.current !== null) {
+        cancelAnimationFrame(retryRafRef.current);
+        retryRafRef.current = null;
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameCount, framesPath]);
 
-  // Gated load for Sections 2 & 3 — fires when parent signals readiness
+  // Gated load for Sections 2 & 3
   useEffect(() => {
     if (triggerLoad === undefined || !triggerLoad) return;
+    imagesRef.current = new Array(frameCount).fill(null);
+    currentIndexRef.current = -1;
     loadFrames(0, frameCount - 1);
-    startPendingPoll(); // Fix C
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerLoad, frameCount, framesPath]);
 
-  // GC fires on scroll — checks isActive at the moment progress exceeds threshold
+  // GC on section exit
   useMotionValueEvent(sectionProgress, 'change', (v) => {
     if (!isActive && v > 0.99 && !gcDoneRef.current) {
-      imagesRef.current.forEach((img) => {
-        if (img) img.src = '';
-      });
+      if (retryRafRef.current !== null) {
+        cancelAnimationFrame(retryRafRef.current);
+        retryRafRef.current = null;
+      }
+      imagesRef.current.forEach((img) => { if (img) img.src = ''; });
       imagesRef.current = imagesRef.current.map(() => null);
       gcDoneRef.current = true;
     }
@@ -246,21 +246,18 @@ export default function FrameCanvas({
   // Re-hydrate from browser cache when section becomes active again
   useEffect(() => {
     if (isActive && gcDoneRef.current) {
+      imagesRef.current = new Array(frameCount).fill(null);
+      currentIndexRef.current = -1;
       loadFrames(0, frameCount - 1);
       gcDoneRef.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 
-  useMotionValueEvent(sectionProgress, 'change', (v) => {
+  // Drive canvas from scroll
+  useMotionValueEvent(sectionProgress, 'change', () => {
     if (prefersReduced) return;
-    const index = Math.min(
-      Math.round(Math.max(0, v) * (frameCount - 1)),
-      frameCount - 1
-    );
-    if (index !== currentIndexRef.current) {
-      scheduleDraw(index);
-    }
+    scheduleDraw();
   });
 
   return (
