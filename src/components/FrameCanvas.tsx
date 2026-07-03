@@ -23,6 +23,7 @@ export default function FrameCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
   const currentIndexRef = useRef<number>(-1);
+  const retryRafRef = useRef<number | null>(null);
   const dprRef = useRef<number>(1);
   const sizeRef = useRef<{ vw: number; vh: number }>({ vw: 0, vh: 0 });
   const gcDoneRef = useRef(false);
@@ -94,12 +95,20 @@ export default function FrameCanvas({
   };
 
   const scheduleDraw = () => {
+    if (retryRafRef.current !== null) {
+      cancelAnimationFrame(retryRafRef.current);
+      retryRafRef.current = null;
+    }
     if (!canvasRef.current) return;
     const fc = frameCountRef.current;
     const progressValue = Math.max(0, Math.min(1, sectionProgressRef.current.get()));
     const targetIndex = Math.min(Math.round(progressValue * (fc - 1)), fc - 1);
     const img = imagesRef.current[targetIndex];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
+    // Frame not yet decoded — retry each rAF tick until it is
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      retryRafRef.current = requestAnimationFrame(scheduleDraw);
+      return;
+    }
     if (currentIndexRef.current === targetIndex) return;
     currentIndexRef.current = targetIndex;
     drawFrame(targetIndex);
@@ -165,6 +174,10 @@ export default function FrameCanvas({
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      if (retryRafRef.current !== null) {
+        cancelAnimationFrame(retryRafRef.current);
+        retryRafRef.current = null;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameCount, framesPath]);
@@ -181,6 +194,10 @@ export default function FrameCanvas({
   // GC on section exit
   useMotionValueEvent(sectionProgress, 'change', (v) => {
     if (!isActive && v > 0.99 && !gcDoneRef.current) {
+      if (retryRafRef.current !== null) {
+        cancelAnimationFrame(retryRafRef.current);
+        retryRafRef.current = null;
+      }
       imagesRef.current.forEach((img) => { if (img) img.src = ''; });
       imagesRef.current = imagesRef.current.map(() => null);
       gcDoneRef.current = true;
