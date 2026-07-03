@@ -17,7 +17,7 @@ type Props = {
   sections: SectionData[];
 };
 
-const CRITICAL_TOTAL = 25;
+const CRITICAL_TOTAL = 175;
 
 export default function ScrollEngine({ sections }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
