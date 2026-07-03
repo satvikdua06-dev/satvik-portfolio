@@ -1,8 +1,8 @@
 const ITEMS = [
-  { label: 'USERS SUPPORTED', value: '1000+', sub: 'STI Portal, stateless scaling on Vercel' },
-  { label: 'USER ROLES', value: '7', sub: 'Multi-stage approval pipeline, 11 transitions' },
-  { label: 'KPIs MODELLED', value: '40+', sub: 'ONGC drilling operations dashboard' },
-  { label: 'TECH STACK', value: '12+', sub: 'Full-stack web, embedded, AI/ML' },
+  { label: 'INFERENCE LATENCY', value: '<3ms', sub: 'ONNX Runtime · CUDA 12.6 · RigVision' },
+  { label: 'EMPLOYEES SERVED', value: '20K', sub: 'ONGC LMS — designed capacity' },
+  { label: 'WORKFLOW STAGES', value: '11', sub: 'STI Portal state machine' },
+  { label: 'LIVE CAMERAS', value: '4', sub: 'Simultaneous tracking · RigVision' },
 ];
 
 export default function SpecsGrid() {

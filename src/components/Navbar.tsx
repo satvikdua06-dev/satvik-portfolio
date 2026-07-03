@@ -9,6 +9,13 @@ const NAV_SECTIONS = [
   { id: 'system', label: 'System' },
 ] as const;
 
+// Target progress values land just past each section's slide-in completion
+// Machine slide-in completes at global 0.385; System at 0.692
+const SECTION_TARGETS: Record<string, number> = {
+  machine: 0.40,
+  system: 0.72,
+};
+
 export default function Navbar() {
   const { scrollY } = useScroll();
   const background = useTransform(
@@ -32,6 +39,21 @@ export default function Navbar() {
     else setActiveSection('system');
   });
 
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    if (id === 'builder') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const targetProgress = SECTION_TARGETS[id];
+    if (targetProgress === undefined) return;
+    const container = document.querySelector('[data-scroll-container]') as HTMLElement | null;
+    if (!container) return;
+    const containerTop = container.getBoundingClientRect().top + window.scrollY;
+    const scrollableRange = container.offsetHeight - window.innerHeight;
+    window.scrollTo({ top: containerTop + targetProgress * scrollableRange, behavior: 'smooth' });
+  };
+
   return (
     <motion.nav
       style={{ background, backdropFilter, WebkitBackdropFilter: backdropFilter }}
@@ -53,6 +75,7 @@ export default function Navbar() {
           <a
             key={item.id}
             href={`#${item.id}`}
+            onClick={(e) => scrollToSection(e, item.id)}
             style={{
               fontFamily: 'var(--font-display)',
               fontSize: '10px',

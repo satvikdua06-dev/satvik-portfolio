@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow_Condensed, Rajdhani } from "next/font/google";
 import "./globals.css";
 import CursorDot from "@/components/CursorDot";
+import StatBar from "@/components/StatBar";
 
 const barlowCondensed = Barlow_Condensed({
   weight: ["400", "700", "800"],
@@ -32,6 +33,7 @@ export default function RootLayout({
     >
       <body>
         <CursorDot />
+        <StatBar />
         {children}
       </body>
     </html>

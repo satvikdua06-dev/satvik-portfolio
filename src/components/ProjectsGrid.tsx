@@ -3,53 +3,66 @@
 type Project = {
   number: string;
   title: string;
-  context: string;
-  year: string;
+  tag: string;
   stack: string[];
-  bullets: string[];
+  description: string;
+  stats: [string, string];
 };
 
 const PROJECTS: Project[] = [
   {
     number: '01',
-    title: 'WellAnalysis',
-    context: 'Drilling Operations Dashboard — ONGC',
-    year: '2025',
-    stack: ['Python', 'PostgreSQL', 'Streamlit', 'Next.js', 'pdfplumber'],
-    bullets: [
-      'Automated ETL pipeline with watchdog to ingest daily PDF drilling reports in real time — eliminated manual data entry for ONGC stakeholders.',
-      'Extraction layer using pdfplumber + regex parses unstructured metadata and dynamic tabular data (depths, costs, mud weights, material consumption).',
-      'Normalised PostgreSQL schema via SQLAlchemy modelling Areas → Rigs → Wells → Daily Progress Reports with transactional commits to prevent duplicate ingestion.',
-      'Analytics dashboard in Streamlit surfaces executive KPIs and a deep-dive interface exposing 40+ operational parameters per well.',
-    ],
+    title: 'RigVision',
+    tag: 'ONGC Internship · Computer Vision · 2025',
+    stack: ['YOLOv8', 'BoT-SORT', 'ONNX', 'CUDA 12.6', 'ResNet18', 'FastAPI', 'React', 'Three.js', 'Redis', 'Docker', 'OpenCV', 'RTMPose'],
+    description:
+      'Multi-camera PPE and safety monitoring system for ONGC drilling rigs. YOLOv8 + BoT-SORT tracking across 4 simultaneous feeds. ResNet18 + k-NN few-shot PPE classifier with pose-guided ROI extraction and temporal smoothing. ONNX Runtime on CUDA 12.6 with a React/Three.js SCADA dashboard and Modbus sensor simulator.',
+    stats: ['<3ms inference · ONNX + CUDA', '4 cameras · simultaneous tracking'],
   },
   {
     number: '02',
-    title: 'MedCollaborate',
-    context: 'Hospital Collaboration Selection Platform',
-    year: '2025',
-    stack: ['MERN', 'Docker', 'GridFS', 'JWT', 'Recharts'],
-    bullets: [
-      'Full-stack MERN platform to ingest, evaluate, and rank hospital collaboration prospects across multi-dimensional KPIs.',
-      'Modular scoring engine in Node.js with dynamic weight allocation across 7+ parameters — real-time recalibration without recomputation.',
-      'Dual-frontend architecture (public onboarding + secure admin) with separate security postures and scalability profiles.',
-      'High-throughput file ingestion via Multer + Streamifier + MongoDB GridFS for large accreditation documents.',
-      'Containerised with Docker Compose, isolating frontend / backend / database for reproducible deployments.',
-    ],
+    title: 'Notarium',
+    tag: 'Personal Project · Marketplace · Deployed',
+    stack: ['Node.js', 'Express', 'TypeScript', 'React', 'Vite', 'Supabase', 'Razorpay', 'PDF watermarking', 'Render', 'Vercel'],
+    description:
+      'Notes-selling marketplace with purchase-gated content delivery. Server-side PDF watermarking embeds the buyer\'s identity into each download. Razorpay webhook fulfillment triggers access. Supabase storage backend, Node/Express/TypeScript API, React + Vite frontend. Live on Render + Vercel.',
+    stats: ['Webhook-driven · zero manual fulfillment', 'Deployed · Render + Vercel + Supabase'],
   },
   {
     number: '03',
+    title: 'CompetenceGraph',
+    tag: 'ONGC Internship · HR Systems · Neo4j',
+    stack: ['Neo4j', 'Ollama', 'LLM', 'FastAPI', 'React', 'PostgreSQL', 'Docker'],
+    description:
+      'Neo4j-backed competency management system mapping ONGC employees to positions via skills. Offline LLM pipeline (Ollama) extracts binary competence flags from appraisal narratives. Threshold-registry pattern keeps runtime queries fully deterministic. FastAPI REST layer with React frontend.',
+    stats: ['500+ employees mapped', 'Offline LLM · no external API calls'],
+  },
+  {
+    number: '04',
     title: 'STI Portal',
-    context: 'Summer Term Internship Workflow',
-    year: '2025',
-    stack: ['React', 'Node.js', 'MongoDB', 'Vercel', 'JWT'],
-    bullets: [
-      'Role-based workflow automation digitising the end-to-end internship lifecycle — 7 user roles, multi-stage approval pipeline.',
-      'State-machine-driven backend managing 11-stage application transitions (draft → approval → grading) with full traceability.',
-      'Resilient multi-step application wizard with debounced auto-save — prevents data loss during long-form submissions.',
-      'Zero-friction external evaluation via tokenised "magic links" — secure, authentication-free input from industry mentors.',
-      'Stateless deployment on Vercel + cloud backend designed for 1000+ concurrent users.',
-    ],
+    tag: 'LNMIIT · Full-Stack · 1000+ Users',
+    stack: ['MongoDB', 'Express', 'React', 'Node.js', 'PostgreSQL', 'JWT', 'RBAC', 'Docker', 'Nodemailer'],
+    description:
+      'Internship lifecycle management platform for LNMIIT covering student applications through final grading. Seven distinct roles with JWT + RBAC access control. Eleven-stage workflow state machine with automated notifications at each transition. MERN stack with PostgreSQL for structured workflow data.',
+    stats: ['7 roles · 11 workflow stages', '1000+ active users'],
+  },
+  {
+    number: '05',
+    title: 'MedCollaborate',
+    tag: 'Healthcare · Resource Coordination · Dockerized',
+    stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Docker Compose', 'Recharts', 'REST API'],
+    description:
+      'Hospital resource coordination platform with a 7-KPI automated scoring engine that ranks incoming resource requests across 40+ indicators. Configurable weight registry allows administrators to tune scoring without code changes. Recharts analytics dashboard. Fully containerised with Docker Compose.',
+    stats: ['40+ KPI indicators', 'Configurable · no-code weight tuning'],
+  },
+  {
+    number: '06',
+    title: 'WellAnalysis',
+    tag: 'ONGC Internship · ETL Pipeline · Python',
+    stack: ['Python', 'pdfplumber', 'Pandas', 'Streamlit', 'Watchdog', 'PostgreSQL'],
+    description:
+      'Automated ETL pipeline for ONGC drilling report processing. A watchdog process monitors an input folder for incoming PDF daily reports, extracts structured drilling metrics using pdfplumber, flags anomalies, and pushes cleaned data to a live Streamlit dashboard. Pandas data layer with configurable extraction schemas per report template.',
+    stats: ['PDF → dashboard · fully automated', 'Anomaly flagging · configurable schemas'],
   },
 ];
 
@@ -134,10 +147,10 @@ export default function ProjectsGrid() {
                   textTransform: 'uppercase',
                 }}
               >
-                {p.number} / {p.year}
+                {p.number}
               </div>
 
-              {/* Title + context + stack */}
+              {/* Title + tag + stack */}
               <div>
                 <h4
                   style={{
@@ -155,13 +168,15 @@ export default function ProjectsGrid() {
                 </h4>
                 <div
                   style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '16px',
-                    color: 'rgba(255,255,255,0.55)',
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '11px',
+                    letterSpacing: '0.2em',
+                    color: 'rgba(255,255,255,0.4)',
+                    textTransform: 'uppercase',
                     marginBottom: '24px',
                   }}
                 >
-                  {p.context}
+                  {p.tag}
                 </div>
                 <div
                   style={{
@@ -189,41 +204,45 @@ export default function ProjectsGrid() {
                 </div>
               </div>
 
-              {/* Bullets */}
-              <ul
-                style={{
-                  listStyle: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '14px',
-                }}
-              >
-                {p.bullets.map((b, j) => (
-                  <li
-                    key={j}
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '15px',
-                      lineHeight: 1.65,
-                      color: 'rgba(255,255,255,0.7)',
-                      paddingLeft: '20px',
-                      position: 'relative',
-                    }}
-                  >
-                    <span
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        top: '11px',
-                        width: '8px',
-                        height: '1px',
-                        background: 'var(--accent-red)',
-                      }}
-                    />
-                    {b}
-                  </li>
-                ))}
-              </ul>
+              {/* Description + Stats */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '15px',
+                    lineHeight: 1.65,
+                    color: 'rgba(255,255,255,0.7)',
+                  }}
+                >
+                  {p.description}
+                </p>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '16px',
+                    borderTop: '1px solid rgba(255,255,255,0.08)',
+                    paddingTop: '20px',
+                  }}
+                >
+                  {p.stats.map((stat, j) => (
+                    <div key={j}>
+                      <div
+                        style={{
+                          fontFamily: 'var(--font-display)',
+                          fontSize: '10px',
+                          letterSpacing: '0.2em',
+                          color: 'var(--accent-silver)',
+                          textTransform: 'uppercase',
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {stat}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </article>
           ))}
         </div>
