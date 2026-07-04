@@ -1,76 +1,158 @@
 @import "tailwindcss";
 
-:root {
-  --base-dark: #080808;
-  --accent-red: #E8002D;
-  --accent-yellow: #F5C518;
-  --accent-silver: #9E9E9E;
-  --carbon: #111111;
-  --font-display: var(--font-big-shoulders), 'Barlow Condensed', monospace;
-  --font-body: var(--font-rajdhani), system-ui, sans-serif;
+@theme inline {
+  --color-void: #07090a;
+  --color-panel: #0c1114;
+  --color-panel2: #10171b;
+  --color-line: #1a2429;
+  --color-amber: #ffae00;
+  --color-scope: #45d8dc;
+  --color-bone: #e9e4d6;
+  --color-dim: #79848c;
+  --color-alarm: #ff4b3e;
+  --font-display: var(--font-big-shoulders);
+  --font-body: var(--font-archivo);
+  --font-mono: var(--font-plex-mono);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  color-scheme: dark;
 }
 
 html {
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
+  background: #07090a;
 }
 
 body {
-  background: var(--base-dark);
-  color: white;
-  font-family: var(--font-body);
+  background: #07090a;
+  color: #e9e4d6;
+  font-family: var(--font-archivo), system-ui, sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #ffae00;
+  color: #07090a;
+}
+
+:focus-visible {
+  outline: 2px solid #ffae00;
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* Custom cursor active (pointer: fine only — class added by Cursor.tsx) */
+.has-cursor,
+.has-cursor a,
+.has-cursor button,
+.has-cursor [role="button"] {
   cursor: none;
 }
 
-@media (pointer: coarse) {
-  body {
-    cursor: auto;
-  }
+::-webkit-scrollbar {
+  width: 10px;
+  background: #07090a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a2429;
+  border: 3px solid #07090a;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffae00;
 }
 
-.hidden-on-touch {
-  display: block;
+/* Custom classes live in the components layer so Tailwind utilities
+   (e.g. `sticky`, `relative`) always take precedence over them. */
+@layer components {
+/* Blueprint grid — sits behind sections */
+.grid-overlay {
+  background-image:
+    linear-gradient(to right, rgba(69, 216, 220, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(69, 216, 220, 0.04) 1px, transparent 1px);
+  background-size: 72px 72px;
 }
 
-@media (pointer: coarse) {
-  .hidden-on-touch {
-    display: none;
-  }
-}
-
-canvas {
-  display: block;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
-
-.project-card {
-  position: relative;
-}
-
-.project-card::before {
-  content: '';
+/* Faint CRT scanlines for panel surfaces */
+.scanlines::after {
+  content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at var(--mx, 50%) var(--my, 50%),
-    rgba(255, 255, 255, 0.06),
-    transparent 60%
-  );
   pointer-events: none;
-  border-radius: inherit;
-  z-index: 1;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.14) 4px
+  );
+}
+
+/* Registration tick marks for section corners */
+.reg-corners {
+  position: relative;
+}
+.reg-corners::before,
+.reg-corners::after {
+  content: "+";
+  position: absolute;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 14px;
+  color: #2b3a41;
+  line-height: 1;
+}
+.reg-corners::before {
+  top: 14px;
+  left: 16px;
+}
+.reg-corners::after {
+  bottom: 14px;
+  right: 16px;
+}
+
+.blink {
+  animation: blink 1.4s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes drift-box {
+  0%   { transform: translate(0, 0) scale(1); }
+  30%  { transform: translate(14px, 6px) scale(1.06); }
+  60%  { transform: translate(-8px, 12px) scale(0.97); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.drift-box {
+  animation: drift-box 7s ease-in-out infinite;
+}
+
+@keyframes flow-pulse {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(340%); }
+}
+.flow-pulse {
+  animation: flow-pulse 2.6s linear infinite;
+}
+}
+
+@keyframes stage-light {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

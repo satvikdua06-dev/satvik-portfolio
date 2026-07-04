@@ -1,39 +1,47 @@
-import type { Metadata } from "next";
-import { Barlow_Condensed, Rajdhani } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, Big_Shoulders, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import CursorDot from "@/components/CursorDot";
 
-const barlowCondensed = Barlow_Condensed({
-  weight: ["400", "700", "800"],
+const display = Big_Shoulders({
+  weight: ["500", "600", "700", "800"],
   variable: "--font-big-shoulders",
   subsets: ["latin"],
 });
 
-const rajdhani = Rajdhani({
-  weight: ["400", "500", "600"],
-  variable: "--font-rajdhani",
+const body = Archivo({
+  weight: ["400", "500"],
+  variable: "--font-archivo",
+  subsets: ["latin"],
+});
+
+const mono = IBM_Plex_Mono({
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Satvik Dua — Software, Robotics, AI",
-  description: "Portfolio of Satvik Dua. Full-stack engineering, embedded systems, and AI deployment.",
+  title: "Satvik Dua — Field Systems Engineer",
+  description:
+    "Computer vision on live drilling rigs, data pipelines, and full-stack systems in production. RigVision, WellAnalysis, Notarium, STI Portal.",
+  openGraph: {
+    title: "Satvik Dua — Field Systems Engineer",
+    description:
+      "Vision systems that watch live drilling rigs — and the software that ships around them.",
+    type: "website",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#07090a",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${barlowCondensed.variable} ${rajdhani.variable}`}
-    >
-      <body>
-        <CursorDot />
-        {children}
-      </body>
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

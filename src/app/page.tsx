@@ -1,56 +1,52 @@
-import type { Metadata } from 'next';
-import { SECTIONS } from '@/data/sections';
-import ScrollEngine from '@/components/ScrollEngine';
-import ProjectsGrid from '@/components/ProjectsGrid';
-import SpecsGrid from '@/components/SpecsGrid';
-import Footer from '@/components/Footer';
-
-export const metadata: Metadata = {
-  title: 'Satvik Dua — Software Engineer',
-  description:
-    'Full-stack, AI/ML, and robotics engineer. RigVision, CompetenceGraph, Notarium.',
-  openGraph: {
-    title: 'Satvik Dua — Software Engineer',
-    description: 'Full-stack, AI/ML, and robotics engineer.',
-    type: 'website',
-  },
-};
+import { PROJECTS, SITE } from "@/data/site";
+import Chrome from "@/components/Chrome";
+import Hero from "@/components/Hero";
+import Philosophy from "@/components/Philosophy";
+import ProjectSection from "@/components/ProjectSection";
+import Stats from "@/components/Stats";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
 const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Satvik Dua',
-  jobTitle: 'Software Engineer',
-  description: 'Full-stack, AI/ML, and robotics engineer.',
-  email: 'satvikdua06@gmail.com',
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: SITE.name,
+  jobTitle: "Software Engineer — Computer Vision & Full-Stack",
+  description: SITE.positioning,
+  email: SITE.email,
+  affiliation: "LNMIIT Jaipur",
 };
 
 export default function Home() {
   return (
-    <main
-      style={{
-        background: 'var(--base-dark)',
-        position: 'relative',
-        minHeight: '100vh',
-      }}
-    >
+    <main className="relative bg-void">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <h1 className="sr-only">Satvik Dua — Software Engineer</h1>
-      <ScrollEngine sections={SECTIONS} />
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 20,
-          background: 'var(--base-dark)',
-        }}
-      >
-        <ProjectsGrid />
-        <SpecsGrid />
-        <Footer />
-      </div>
+      <Chrome />
+      <Hero />
+      <Philosophy />
+
+      <section id="work" aria-label="Featured projects" className="border-t border-line">
+        <div className="reg-corners bg-void px-6 py-20 md:px-10">
+          <div className="mx-auto max-w-6xl">
+            <p className="font-mono text-[10px] tracking-[0.3em] text-amber">
+              1480M — OPERATIONS // FEATURED SYSTEMS
+            </p>
+            <h2 className="font-display mt-4 text-4xl font-bold uppercase md:text-6xl">
+              Four systems, all live<span className="text-amber">.</span>
+            </h2>
+          </div>
+        </div>
+        {PROJECTS.map((p) => (
+          <ProjectSection key={p.id} project={p} />
+        ))}
+      </section>
+
+      <Stats />
+      <Contact />
+      <Footer />
     </main>
   );
 }
