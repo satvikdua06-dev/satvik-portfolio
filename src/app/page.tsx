@@ -3,7 +3,7 @@ import CanvasBackground from "@/components/CanvasBackground";
 import Chrome from "@/components/Chrome";
 import Hero from "@/components/Hero";
 import Philosophy from "@/components/Philosophy";
-import ProjectSection from "@/components/ProjectSection";
+import WorkContainer from "@/components/WorkContainer";
 import Stats from "@/components/Stats";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -43,9 +43,7 @@ export default function Home() {
               </h2>
             </div>
           </div>
-          {PROJECTS.map((p) => (
-            <ProjectSection key={p.id} project={p} />
-          ))}
+          <WorkContainer projects={PROJECTS} />
         </section>
 
         <Stats />

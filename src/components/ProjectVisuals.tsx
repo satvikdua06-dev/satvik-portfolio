@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { STI_ROLES } from "@/data/site";
 import Readout from "./Readout";

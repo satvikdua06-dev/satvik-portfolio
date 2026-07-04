@@ -6,7 +6,7 @@ export const SITE = {
   github: "https://github.com/satvikdua",
   linkedin: "https://www.linkedin.com/in/satvikdua",
   positioning:
-    "I build vision systems that watch live drilling rigs — and the software that runs around them.",
+    "I build robust computer vision systems, graph databases, and data infrastructure designed to run reliably under real-world constraints.",
   eyebrow: "B.TECH CCE · LNMIIT JAIPUR '28 — CV & DATA SYSTEMS INTERN @ ONGC",
 };
 
@@ -27,6 +27,7 @@ export interface Project {
   stack: string[];
   visual: ProjectVisual;
   live?: boolean;
+  github?: string;
   readouts: { label: string; base: number; jitter: number; unit: string; decimals?: number }[];
 }
 
@@ -45,6 +46,7 @@ export const PROJECTS: Project[] = [
       "~25 FPS sustained across concurrent live feeds on site hardware, with per-track violation events instead of noisy per-frame alerts. Running against real rig footage at ONGC — not a demo reel.",
     stack: ["YOLOv8", "BoT-SORT", "ONNX Runtime", "CUDA", "OpenCV", "Python", "ResNet18"],
     visual: "cameras",
+    github: "https://github.com/satvikdua06-dev/RigVision",
     readouts: [
       { label: "INFERENCE", base: 25, jitter: 1.4, unit: "FPS" },
       { label: "TRACKS", base: 11, jitter: 2, unit: "ACT" },
@@ -85,6 +87,7 @@ export const PROJECTS: Project[] = [
       "Mapped over 500 employee profiles to roles. FastAPI served the graph queries locally, ensuring zero data leaks and running fully on-premises on standard workstation hardware.",
     stack: ["Neo4j", "Ollama", "FastAPI", "React", "PostgreSQL", "Docker"],
     visual: "graph",
+    github: "https://github.com/satvikdua06-dev/CompetenceGraph",
     readouts: [
       { label: "EMPLOYEES", base: 512, jitter: 0, unit: "MAP" },
       { label: "RELATIONS", base: 1420, jitter: 12, unit: "EDGE" },
@@ -109,6 +112,7 @@ export const PROJECTS: Project[] = [
     ],
     visual: "marketplace",
     live: true,
+    github: "https://github.com/satvikdua06-dev/Notes_Sell",
     readouts: [
       { label: "GATEWAY", base: 99.1, jitter: 0.3, unit: "%", decimals: 1 },
       { label: "WMARK", base: 214, jitter: 6, unit: "MS" },
@@ -129,6 +133,7 @@ export const PROJECTS: Project[] = [
       "1,000+ users through a single pipeline. The question 'where is my application?' became a lookup instead of a phone call.",
     stack: ["MongoDB", "Express", "React", "Node.js", "RBAC"],
     visual: "stages",
+    github: "https://github.com/satvikdua06-dev/STI",
     readouts: [
       { label: "USERS", base: 1042, jitter: 4, unit: "REG" },
       { label: "ROLES", base: 7, jitter: 0, unit: "RBAC" },

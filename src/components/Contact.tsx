@@ -6,7 +6,7 @@ const CHANNELS = [
   { k: "EMAIL", v: SITE.email, href: `mailto:${SITE.email}` },
   { k: "GITHUB", v: "github.com/satvikdua", href: SITE.github },
   { k: "LINKEDIN", v: "in/satvikdua", href: SITE.linkedin },
-  { k: "STATION", v: SITE.location, href: undefined },
+  { k: "STATION", v: `${SITE.location} · 26.9124° N, 75.7873° E`, href: undefined },
 ];
 
 /** Final beat: target depth reached, one channel left open. */

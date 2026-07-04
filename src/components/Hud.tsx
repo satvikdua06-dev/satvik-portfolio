@@ -82,7 +82,7 @@ export default function Hud() {
 
   return (
     <div
-      className="fixed bottom-4 left-4 z-[70] select-none font-mono text-[10px] leading-4 tracking-wider"
+      className="fixed bottom-4 left-16 z-[70] select-none font-mono text-[10px] leading-4 tracking-wider"
       role="status"
       aria-label="Site telemetry"
     >

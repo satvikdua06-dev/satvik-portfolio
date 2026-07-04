@@ -1,13 +1,54 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { SITE } from "@/data/site";
+import PointCloudCanvas from "./PointCloudCanvas";
 
-/**
- * Hero. Transparent over the seismic background; on scroll the stage scales
- * down and dims — a camera pulling back from the console.
- */
+function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
+  const [displayText, setDisplayText] = useState("");
+  const reduced = useReducedMotion();
+
+  useEffect(() => {
+    if (reduced) return;
+
+    const timer = setTimeout(() => {
+      let frame = 0;
+      const duration = 22;
+      const GLYPHS = "0123456789!@#$%^&*()_+{}|:<>?-=[]\\;',./";
+      let raf = 0;
+
+      const tick = () => {
+        frame++;
+        const progress = frame / duration;
+        const result = text
+          .split("")
+          .map((char, index) => {
+            if (char === " ") return " ";
+            if (index / text.length < progress) return char;
+            return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          })
+          .join("");
+
+        setDisplayText(result);
+
+        if (frame < duration) {
+          raf = requestAnimationFrame(tick);
+        } else {
+          setDisplayText(text);
+        }
+      };
+
+      raf = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(raf);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [text, reduced, delay]);
+
+  return <span>{reduced ? text : displayText || text}</span>;
+}
+
 export default function Hero() {
   const wrap = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -27,17 +68,18 @@ export default function Hero() {
         className="reg-corners sticky top-0 flex h-screen flex-col justify-center overflow-hidden"
         aria-label="Introduction"
       >
-        <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
+        <PointCloudCanvas imageSrc="/portrait.jpeg" />
+        <div className="mx-auto w-full max-w-6xl px-6 md:px-10 relative z-10">
           <p className="font-mono text-[10px] tracking-[0.3em] text-dim md:text-xs">
-            {SITE.eyebrow}
+            <ScrambleText text={SITE.eyebrow} delay={2000} />
           </p>
           <h1 className="font-display mt-6 text-[20vw] leading-[0.88] font-semibold tracking-tight text-bone uppercase md:text-[11rem]">
             Satvik
             <br />
             Dua<span className="text-amber">.</span>
           </h1>
-          <p className="mt-8 max-w-xl text-base leading-relaxed text-dim md:text-lg">
-            {SITE.positioning}
+          <p className="mt-8 max-w-xl text-base leading-relaxed text-dim md:text-lg min-h-[3.5rem]">
+            <ScrambleText text={SITE.positioning} delay={2200} />
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
