@@ -1,4 +1,5 @@
 import { PROJECTS, SITE } from "@/data/site";
+import CanvasBackground from "@/components/CanvasBackground";
 import Chrome from "@/components/Chrome";
 import Hero from "@/components/Hero";
 import Philosophy from "@/components/Philosophy";
@@ -19,34 +20,38 @@ const jsonLd = {
 
 export default function Home() {
   return (
-    <main className="relative bg-void">
+    <main className="relative">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <CanvasBackground />
       <Chrome />
-      <Hero />
-      <Philosophy />
+      {/* content layer above the fixed background canvas */}
+      <div className="relative z-10">
+        <Hero />
+        <Philosophy />
 
-      <section id="work" aria-label="Featured projects" className="border-t border-line">
-        <div className="reg-corners bg-void px-6 py-20 md:px-10">
-          <div className="mx-auto max-w-6xl">
-            <p className="font-mono text-[10px] tracking-[0.3em] text-amber">
-              1480M — OPERATIONS // FEATURED SYSTEMS
-            </p>
-            <h2 className="font-display mt-4 text-4xl font-bold uppercase md:text-6xl">
-              Four systems, all live<span className="text-amber">.</span>
-            </h2>
+        <section id="work" aria-label="Featured projects" className="border-t border-line">
+          <div className="reg-corners px-6 py-20 md:px-10">
+            <div className="mx-auto max-w-6xl">
+              <p className="font-mono text-[10px] tracking-[0.3em] text-amber">
+                1480M · OPERATIONS — FEATURED SYSTEMS
+              </p>
+              <h2 className="font-display mt-4 text-4xl font-semibold uppercase md:text-6xl">
+                Five systems. Real constraints<span className="text-amber">.</span>
+              </h2>
+            </div>
           </div>
-        </div>
-        {PROJECTS.map((p) => (
-          <ProjectSection key={p.id} project={p} />
-        ))}
-      </section>
+          {PROJECTS.map((p) => (
+            <ProjectSection key={p.id} project={p} />
+          ))}
+        </section>
 
-      <Stats />
-      <Contact />
-      <Footer />
+        <Stats />
+        <Contact />
+        <Footer />
+      </div>
     </main>
   );
 }

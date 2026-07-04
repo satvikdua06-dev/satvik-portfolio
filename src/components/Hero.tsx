@@ -3,11 +3,10 @@
 import { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { SITE } from "@/data/site";
-import SeismicCanvas from "./SeismicCanvas";
 
 /**
- * Hero. On scroll the whole stage scales down and dims — a camera pulling
- * back from the console — while the next section slides over it.
+ * Hero. Transparent over the seismic background; on scroll the stage scales
+ * down and dims — a camera pulling back from the console.
  */
 export default function Hero() {
   const wrap = useRef<HTMLDivElement>(null);
@@ -16,28 +15,23 @@ export default function Hero() {
     target: wrap,
     offset: ["start start", "end start"],
   });
-  // Spring-smoothed so the exit is JS-driven every frame (never handed to a
-  // native scroll timeline, which mis-times against sticky containers).
   const smooth = useSpring(scrollYProgress, { stiffness: 160, damping: 28, mass: 0.4 });
-  const scale = useTransform(smooth, [0, 1], [1, 0.92]);
-  const opacity = useTransform(smooth, [0, 0.85], [1, 0.15]);
-  const y = useTransform(smooth, [0, 1], ["0%", "12%"]);
+  const scale = useTransform(smooth, [0, 1], [1, 0.93]);
+  const opacity = useTransform(smooth, [0, 0.9], [1, 0]);
+  const y = useTransform(smooth, [0, 1], ["0%", "10%"]);
 
   return (
     <div ref={wrap} id="hero" className="relative h-[130vh]">
       <motion.section
         style={reduced ? undefined : { scale, opacity, y }}
-        className="reg-corners sticky top-0 flex h-screen flex-col justify-center overflow-hidden bg-void"
+        className="reg-corners sticky top-0 flex h-screen flex-col justify-center overflow-hidden"
         aria-label="Introduction"
       >
-        <SeismicCanvas />
-        <div className="grid-overlay pointer-events-none absolute inset-0" />
-
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-6 md:px-10">
-          <p className="font-mono text-[10px] tracking-[0.3em] text-scope md:text-xs">
+        <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-dim md:text-xs">
             {SITE.eyebrow}
           </p>
-          <h1 className="font-display mt-6 text-[19vw] leading-[0.86] font-bold tracking-tight text-bone uppercase md:text-[10.5rem]">
+          <h1 className="font-display mt-6 text-[20vw] leading-[0.88] font-semibold tracking-tight text-bone uppercase md:text-[11rem]">
             Satvik
             <br />
             Dua<span className="text-amber">.</span>
@@ -65,7 +59,7 @@ export default function Hero() {
         </div>
 
         {/* scroll cue styled as a drill-string marker */}
-        <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-center font-mono text-[10px] tracking-[0.25em] text-dim">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center font-mono text-[10px] tracking-[0.25em] text-dim">
           <p>SCROLL TO DESCEND</p>
           <motion.div
             aria-hidden

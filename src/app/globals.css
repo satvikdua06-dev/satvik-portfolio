@@ -2,26 +2,27 @@
 
 /*
  * Palette: "inside the instrument".
- * Warm near-black like an old oscilloscope housing — every gray carries the
- * same brown undertone, never neutral. Phosphor amber (#e8a020) is the one
- * primary accent (radar screens, panel lamps); instrument teal (#3ecfb2) is
- * its functional counterpart for live/active/OK states; signal red-orange
- * (#d94f2a) appears only on alert markers (REC dots). Text is warm off-white,
- * lit from within, never #fff.
+ * A warm-black housing with an olive/brown undertone — the inside of an old
+ * oscilloscope, not #000. Every surface and gray carries the same warm hue.
+ * Amber-gold (#d4920f) is the single primary accent: panel lamps, phosphor
+ * traces, interactive elements. Desaturated instrument teal (#4a9b8a) marks
+ * only things that are actually running/live. Signal red-orange (#d94f2a)
+ * appears only on alert markers. Text is warm off-white like aged paper lit
+ * from behind; secondary text is a true warm mid-gray, not faded white.
  */
 @theme inline {
-  --color-void: #0e0d0a;   /* base — warm near-black, not #000 */
-  --color-panel: #151310;  /* matte carbon surface */
-  --color-panel2: #1b1813; /* raised surface */
-  --color-line: #2a251c;   /* hairlines, borders */
-  --color-amber: #e8a020;  /* phosphor amber — primary accent */
-  --color-scope: #3ecfb2;  /* instrument teal — live/active states */
-  --color-bone: #e8e4d9;   /* primary text */
-  --color-dim: #8f887a;    /* secondary text, same hue dimmer */
+  --color-void: #0c0b08;   /* base — warm black, olive undertone */
+  --color-panel: #16140d;  /* matte carbon surface */
+  --color-panel2: #1a180f; /* raised surface */
+  --color-line: #2e2a1f;   /* borders — aged aluminum */
+  --color-amber: #d4920f;  /* amber-gold — primary accent */
+  --color-scope: #4a9b8a;  /* desaturated teal — live/active only */
+  --color-bone: #e4dfc8;   /* primary text */
+  --color-dim: #8a8270;    /* secondary text, same hue family */
   --color-alarm: #d94f2a;  /* signal red-orange — alerts only */
-  --font-display: var(--font-big-shoulders);
-  --font-body: var(--font-archivo);
-  --font-mono: var(--font-plex-mono);
+  --font-display: var(--font-display-face);
+  --font-body: var(--font-body-face);
+  --font-mono: var(--font-mono-face);
 }
 
 :root {
@@ -30,24 +31,24 @@
 
 html {
   scroll-behavior: smooth;
-  background: #0e0d0a;
+  background: #0c0b08;
 }
 
 body {
-  background: #0e0d0a;
-  color: #e8e4d9;
-  font-family: var(--font-archivo), system-ui, sans-serif;
+  background: #0c0b08;
+  color: #e4dfc8;
+  font-family: var(--font-body-face), system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #e8a020;
-  color: #0e0d0a;
+  background: #d4920f;
+  color: #0c0b08;
 }
 
 :focus-visible {
-  outline: 2px solid #e8a020;
+  outline: 2px solid #d4920f;
   outline-offset: 3px;
   border-radius: 1px;
 }
@@ -62,28 +63,20 @@ body {
 
 ::-webkit-scrollbar {
   width: 10px;
-  background: #0e0d0a;
+  background: #0c0b08;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a251c;
-  border: 3px solid #0e0d0a;
+  background: #2e2a1f;
+  border: 3px solid #0c0b08;
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #e8a020;
+  background: #d4920f;
 }
 
 /* Custom classes live in the components layer so Tailwind utilities
    (e.g. `sticky`, `relative`) always take precedence over them. */
 @layer components {
-/* Instrument grid — faint teal graticule behind the hero */
-.grid-overlay {
-  background-image:
-    linear-gradient(to right, rgba(62, 207, 178, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(62, 207, 178, 0.035) 1px, transparent 1px);
-  background-size: 72px 72px;
-}
-
 /* Faint CRT scanlines for panel surfaces */
 .scanlines::after {
   content: "";
@@ -106,9 +99,9 @@ body {
 .reg-corners::after {
   content: "+";
   position: absolute;
-  font-family: var(--font-plex-mono), monospace;
+  font-family: var(--font-mono-face), monospace;
   font-size: 14px;
-  color: #3a3427;
+  color: #35301e;
   line-height: 1;
 }
 .reg-corners::before {
@@ -139,12 +132,14 @@ body {
   animation: drift-box 7s ease-in-out infinite;
 }
 
-@keyframes flow-pulse {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(340%); }
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -20;
+  }
 }
-.flow-pulse {
-  animation: flow-pulse 2.6s linear infinite;
+.flow-line {
+  stroke-dasharray: 6 4;
+  animation: flow-dash 1.2s linear infinite;
 }
 }
 

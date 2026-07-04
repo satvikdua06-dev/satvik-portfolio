@@ -19,7 +19,7 @@ export default function TiltCard({ children }: { children: React.ReactNode }) {
   const sheen = useTransform(
     [sheenX, sheenY],
     ([x, y]) =>
-      `radial-gradient(400px circle at ${x} ${y}, rgba(232,160,32,0.05), transparent 65%)`
+      `radial-gradient(400px circle at ${x} ${y}, rgba(212,146,15,0.06), transparent 65%)`
   );
 
   const onMove = (e: React.PointerEvent) => {

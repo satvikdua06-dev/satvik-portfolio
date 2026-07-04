@@ -1,7 +1,6 @@
 "use client";
 
 import { SITE, WELL_DEPTH_M } from "@/data/site";
-import Starfield from "./Starfield";
 
 const CHANNELS = [
   { k: "EMAIL", v: SITE.email, href: `mailto:${SITE.email}` },
@@ -16,9 +15,8 @@ export default function Contact() {
     <section
       id="contact"
       aria-label="Contact"
-      className="reg-corners relative overflow-hidden border-t border-line bg-void px-6 pt-28 pb-20 md:px-10"
+      className="reg-corners relative border-t border-line px-6 pt-28 pb-20 md:px-10"
     >
-      <Starfield />
       <div className="relative mx-auto max-w-6xl">
         <p className="font-mono text-[10px] tracking-[0.3em] text-scope">
           {WELL_DEPTH_M}M — TARGET DEPTH REACHED

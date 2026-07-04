@@ -84,7 +84,7 @@ export default function Cursor() {
           className="absolute inset-0 rounded-full"
           style={{
             background:
-              "conic-gradient(from 0deg, rgba(232,160,32,0.32), transparent 70deg, transparent 360deg)",
+              "conic-gradient(from 0deg, rgba(212,146,15,0.3), transparent 70deg, transparent 360deg)",
             animation: "sweep 2.4s linear infinite",
           }}
         />

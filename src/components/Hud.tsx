@@ -10,18 +10,51 @@ import { sfx } from "@/lib/audio";
  * depth — the page IS the wellbore. Also hosts the ambient-audio toggle and
  * listens for `hud:msg` events (easter egg, palette actions).
  */
+function getInterpDepth(y: number): number {
+  const philosophy = document.getElementById("philosophy");
+  const work = document.getElementById("work");
+  const telemetry = document.getElementById("telemetry");
+
+  const y0 = 0;
+  const y1 = philosophy ? philosophy.offsetTop : 0;
+  const y2 = work ? work.offsetTop : 0;
+  const y3 = telemetry ? telemetry.offsetTop : 0;
+  const y4 = document.documentElement.scrollHeight - window.innerHeight;
+
+  const offsets = [y0, y1, y2, y3, y4];
+  const depths = [0, 740, 1480, 3100, WELL_DEPTH_M];
+
+  if (y <= offsets[0]) return depths[0];
+  if (y >= offsets[offsets.length - 1]) return depths[depths.length - 1];
+
+  for (let i = 0; i < offsets.length - 1; i++) {
+    if (y >= offsets[i] && y < offsets[i + 1]) {
+      const t = (y - offsets[i]) / (offsets[i + 1] - offsets[i]);
+      return depths[i] + t * (depths[i + 1] - depths[i]);
+    }
+  }
+  return depths[depths.length - 1];
+}
+
 export default function Hud() {
-  const { scrollYProgress } = useScroll();
+  const { scrollY } = useScroll();
   const [depth, setDepth] = useState(0);
   const [time, setTime] = useState("--:--:--");
   const [sound, setSound] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setDepth(Math.round(v * WELL_DEPTH_M));
+  useMotionValueEvent(scrollY, "change", (y) => {
+    setDepth(Math.round(getInterpDepth(y)));
   });
 
   useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      setDepth(Math.round(getInterpDepth(window.scrollY)));
+    };
+    // Defer one frame to prevent synchronous render and hydration mismatch
+    raf = requestAnimationFrame(update);
+
     const tick = () =>
       setTime(
         new Date().toLocaleTimeString("en-IN", {
@@ -38,6 +71,7 @@ export default function Hud() {
     };
     window.addEventListener("hud:msg", onMsg);
     return () => {
+      cancelAnimationFrame(raf);
       clearInterval(iv);
       unsub();
       window.removeEventListener("hud:msg", onMsg);

@@ -1,39 +1,41 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Big_Shoulders, IBM_Plex_Mono } from "next/font/google";
+import { Barlow_Condensed, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const display = Big_Shoulders({
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-big-shoulders",
+// Three registers: muscular DIN-rooted display for titles only, quiet
+// geometric body for reading, monospace strictly for data and chrome.
+const display = Barlow_Condensed({
+  weight: ["500", "600", "700"],
+  variable: "--font-display-face",
   subsets: ["latin"],
 });
 
-const body = Archivo({
+const body = Space_Grotesk({
   weight: ["400", "500"],
-  variable: "--font-archivo",
+  variable: "--font-body-face",
   subsets: ["latin"],
 });
 
-const mono = IBM_Plex_Mono({
+const mono = JetBrains_Mono({
   weight: ["400", "500"],
-  variable: "--font-plex-mono",
+  variable: "--font-mono-face",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "Satvik Dua — Field Systems Engineer",
   description:
-    "Computer vision on live drilling rigs, data pipelines, and full-stack systems in production. RigVision, WellAnalysis, Notarium, STI Portal.",
+    "Computer vision on live drilling rigs, data pipelines, and full-stack systems. RigVision, WellAnalysis, Notarium, STI Portal.",
   openGraph: {
     title: "Satvik Dua — Field Systems Engineer",
     description:
-      "Vision systems that watch live drilling rigs — and the software that ships around them.",
+      "Vision systems that watch live drilling rigs — and the software that runs around them.",
     type: "website",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0e0d0a",
+  themeColor: "#0c0b08",
 };
 
 export default function RootLayout({
