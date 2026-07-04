@@ -1,6 +1,6 @@
 export const SITE = {
   name: "Satvik Dua",
-  role: "Field Systems Engineer",
+  role: "SDE + AI",
   email: "satvikdua06@gmail.com",
   location: "Jaipur, IN",
   github: "https://github.com/satvikdua",

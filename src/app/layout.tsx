@@ -23,13 +23,13 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Satvik Dua — Field Systems Engineer",
+  title: "Satvik Dua — SDE + AI",
   description:
-    "Computer vision on live drilling rigs, data pipelines, and full-stack systems. RigVision, WellAnalysis, Notarium, STI Portal.",
+    "I build robust computer vision systems, graph databases, and data infrastructure designed to run reliably under real-world constraints.",
   openGraph: {
-    title: "Satvik Dua — Field Systems Engineer",
+    title: "Satvik Dua — SDE + AI",
     description:
-      "Vision systems that watch live drilling rigs — and the software that runs around them.",
+      "I build robust computer vision systems, graph databases, and data infrastructure designed to run reliably under real-world constraints.",
     type: "website",
   },
 };
