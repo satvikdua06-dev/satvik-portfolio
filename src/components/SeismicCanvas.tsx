@@ -71,8 +71,8 @@ export default function SeismicCanvas() {
         }
         const hot = r === Math.floor(ROWS / 2);
         ctx.strokeStyle = hot
-          ? "rgba(255,174,0,0.34)"
-          : `rgba(69,216,220,${0.05 + 0.09 * (1 - Math.abs(r - ROWS / 2) / (ROWS / 2))})`;
+          ? "rgba(232,160,32,0.38)" // phosphor amber — the hot trace
+          : `rgba(62,207,178,${0.05 + 0.09 * (1 - Math.abs(r - ROWS / 2) / (ROWS / 2))})`;
         ctx.lineWidth = 1;
         ctx.stroke();
       }

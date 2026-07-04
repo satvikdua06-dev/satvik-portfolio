@@ -40,9 +40,9 @@ function Dial({ value, suffix, label, detail, active }: {
     <div className="border border-line bg-panel/80 p-6 backdrop-blur-sm">
       <div className="relative mx-auto size-28">
         <svg viewBox="0 0 100 100" className="size-full -rotate-[135deg]" aria-hidden>
-          <circle cx="50" cy="50" r={R} fill="none" stroke="#1a2429" strokeWidth="3"
+          <circle cx="50" cy="50" r={R} fill="none" stroke="#2a251c" strokeWidth="3"
             strokeDasharray={`${C} ${2 * Math.PI * R}`} strokeLinecap="round" />
-          <circle cx="50" cy="50" r={R} fill="none" stroke="#ffae00" strokeWidth="3"
+          <circle cx="50" cy="50" r={R} fill="none" stroke="#e8a020" strokeWidth="3"
             strokeDasharray={`${C * p} ${2 * Math.PI * R}`} strokeLinecap="round" />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">

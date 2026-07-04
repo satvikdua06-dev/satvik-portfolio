@@ -64,29 +64,38 @@ export default function CommandPalette() {
   );
 
   useEffect(() => {
+    // Reset happens on open (event handlers), not in an effect
+    const openFresh = () => {
+      setQuery("");
+      setSel(0);
+      setOpen(true);
+    };
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setOpen((o) => !o);
+        setOpen((o) => {
+          if (!o) {
+            setQuery("");
+            setSel(0);
+          }
+          return !o;
+        });
       } else if (e.key === "Escape") {
         setOpen(false);
       }
     };
-    const onOpen = () => setOpen(true);
     window.addEventListener("keydown", onKey);
-    window.addEventListener("palette:open", onOpen);
+    window.addEventListener("palette:open", openFresh);
     return () => {
       window.removeEventListener("keydown", onKey);
-      window.removeEventListener("palette:open", onOpen);
+      window.removeEventListener("palette:open", openFresh);
     };
   }, []);
 
   useEffect(() => {
     if (open) {
-      setQuery("");
-      setSel(0);
-      // focus after mount
-      requestAnimationFrame(() => inputRef.current?.focus());
+      const raf = requestAnimationFrame(() => inputRef.current?.focus());
+      return () => cancelAnimationFrame(raf);
     }
   }, [open]);
 

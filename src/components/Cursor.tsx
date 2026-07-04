@@ -22,7 +22,7 @@ export default function Cursor() {
     if (reduced) return;
     const fine = window.matchMedia("(pointer: fine)");
     if (!fine.matches) return;
-    setActive(true);
+    const raf = requestAnimationFrame(() => setActive(true));
     document.documentElement.classList.add("has-cursor");
 
     let magnetEl: HTMLElement | null = null;
@@ -53,6 +53,7 @@ export default function Cursor() {
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerover", onOver, { passive: true });
     return () => {
+      cancelAnimationFrame(raf);
       document.documentElement.classList.remove("has-cursor");
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerover", onOver);
@@ -83,7 +84,7 @@ export default function Cursor() {
           className="absolute inset-0 rounded-full"
           style={{
             background:
-              "conic-gradient(from 0deg, rgba(255,174,0,0.35), transparent 70deg, transparent 360deg)",
+              "conic-gradient(from 0deg, rgba(232,160,32,0.32), transparent 70deg, transparent 360deg)",
             animation: "sweep 2.4s linear infinite",
           }}
         />

@@ -47,7 +47,7 @@ export default function Philosophy() {
               <span
                 key={i}
                 className={`inline-block transition-colors duration-300 ${
-                  reduced || i < revealed ? "text-bone" : "text-[#22313a]"
+                  reduced || i < revealed ? "text-bone" : "text-[#38321f]"
                 }`}
               >
                 {w}&nbsp;

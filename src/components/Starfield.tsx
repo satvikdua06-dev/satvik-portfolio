@@ -47,7 +47,7 @@ export default function Starfield() {
       for (const s of stars) {
         const y = (s.y * h + scroll * 0.04 * s.z) % h;
         const a = 0.25 + 0.5 * s.z * (0.7 + 0.3 * Math.sin(t * 0.0012 + s.tw));
-        ctx.fillStyle = `rgba(233,228,214,${a})`;
+        ctx.fillStyle = `rgba(232,228,217,${a})`;
         ctx.fillRect(s.x * w, y, s.z > 0.8 ? 1.6 : 1, s.z > 0.8 ? 1.6 : 1);
       }
     };

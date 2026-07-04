@@ -1,15 +1,24 @@
 @import "tailwindcss";
 
+/*
+ * Palette: "inside the instrument".
+ * Warm near-black like an old oscilloscope housing — every gray carries the
+ * same brown undertone, never neutral. Phosphor amber (#e8a020) is the one
+ * primary accent (radar screens, panel lamps); instrument teal (#3ecfb2) is
+ * its functional counterpart for live/active/OK states; signal red-orange
+ * (#d94f2a) appears only on alert markers (REC dots). Text is warm off-white,
+ * lit from within, never #fff.
+ */
 @theme inline {
-  --color-void: #07090a;
-  --color-panel: #0c1114;
-  --color-panel2: #10171b;
-  --color-line: #1a2429;
-  --color-amber: #ffae00;
-  --color-scope: #45d8dc;
-  --color-bone: #e9e4d6;
-  --color-dim: #79848c;
-  --color-alarm: #ff4b3e;
+  --color-void: #0e0d0a;   /* base — warm near-black, not #000 */
+  --color-panel: #151310;  /* matte carbon surface */
+  --color-panel2: #1b1813; /* raised surface */
+  --color-line: #2a251c;   /* hairlines, borders */
+  --color-amber: #e8a020;  /* phosphor amber — primary accent */
+  --color-scope: #3ecfb2;  /* instrument teal — live/active states */
+  --color-bone: #e8e4d9;   /* primary text */
+  --color-dim: #8f887a;    /* secondary text, same hue dimmer */
+  --color-alarm: #d94f2a;  /* signal red-orange — alerts only */
   --font-display: var(--font-big-shoulders);
   --font-body: var(--font-archivo);
   --font-mono: var(--font-plex-mono);
@@ -21,24 +30,24 @@
 
 html {
   scroll-behavior: smooth;
-  background: #07090a;
+  background: #0e0d0a;
 }
 
 body {
-  background: #07090a;
-  color: #e9e4d6;
+  background: #0e0d0a;
+  color: #e8e4d9;
   font-family: var(--font-archivo), system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #ffae00;
-  color: #07090a;
+  background: #e8a020;
+  color: #0e0d0a;
 }
 
 :focus-visible {
-  outline: 2px solid #ffae00;
+  outline: 2px solid #e8a020;
   outline-offset: 3px;
   border-radius: 1px;
 }
@@ -53,25 +62,25 @@ body {
 
 ::-webkit-scrollbar {
   width: 10px;
-  background: #07090a;
+  background: #0e0d0a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1a2429;
-  border: 3px solid #07090a;
+  background: #2a251c;
+  border: 3px solid #0e0d0a;
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #ffae00;
+  background: #e8a020;
 }
 
 /* Custom classes live in the components layer so Tailwind utilities
    (e.g. `sticky`, `relative`) always take precedence over them. */
 @layer components {
-/* Blueprint grid — sits behind sections */
+/* Instrument grid — faint teal graticule behind the hero */
 .grid-overlay {
   background-image:
-    linear-gradient(to right, rgba(69, 216, 220, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(69, 216, 220, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(62, 207, 178, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(62, 207, 178, 0.035) 1px, transparent 1px);
   background-size: 72px 72px;
 }
 
@@ -99,7 +108,7 @@ body {
   position: absolute;
   font-family: var(--font-plex-mono), monospace;
   font-size: 14px;
-  color: #2b3a41;
+  color: #3a3427;
   line-height: 1;
 }
 .reg-corners::before {

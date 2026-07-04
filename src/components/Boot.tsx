@@ -25,19 +25,9 @@ export default function Boot() {
   const doneRef = useRef(false);
 
   useEffect(() => {
-    if (reduced || sessionStorage.getItem("dua-os-booted")) {
-      setPhase("done");
-      return;
-    }
-    setPhase("running");
-    const step = TOTAL_MS / LINES.length;
-    const iv = setInterval(() => {
-      setShown((n) => {
-        if (n + 1 >= LINES.length) clearInterval(iv);
-        return Math.min(n + 1, LINES.length);
-      });
-    }, step);
-    const end = setTimeout(finish, TOTAL_MS + 450);
+    let iv: ReturnType<typeof setInterval> | undefined;
+    let end: ReturnType<typeof setTimeout> | undefined;
+
     function finish() {
       if (doneRef.current) return;
       doneRef.current = true;
@@ -45,11 +35,32 @@ export default function Boot() {
       setPhase("done");
     }
     const skip = () => finish();
-    window.addEventListener("keydown", skip);
-    window.addEventListener("pointerdown", skip);
+
+    // Deferred a frame: the decision reads client-only state (sessionStorage)
+    // and settles after first paint, keeping the effect body render-free.
+    const raf = requestAnimationFrame(() => {
+      if (reduced || sessionStorage.getItem("dua-os-booted")) {
+        doneRef.current = true;
+        setPhase("done");
+        return;
+      }
+      setPhase("running");
+      const step = TOTAL_MS / LINES.length;
+      iv = setInterval(() => {
+        setShown((n) => {
+          if (n + 1 >= LINES.length) clearInterval(iv);
+          return Math.min(n + 1, LINES.length);
+        });
+      }, step);
+      end = setTimeout(finish, TOTAL_MS + 450);
+      window.addEventListener("keydown", skip);
+      window.addEventListener("pointerdown", skip);
+    });
+
     return () => {
-      clearInterval(iv);
-      clearTimeout(end);
+      cancelAnimationFrame(raf);
+      if (iv) clearInterval(iv);
+      if (end) clearTimeout(end);
       window.removeEventListener("keydown", skip);
       window.removeEventListener("pointerdown", skip);
     };

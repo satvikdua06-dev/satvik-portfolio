@@ -99,7 +99,7 @@ function Stages() {
             <div
               className="size-2.5 rounded-full border border-scope"
               style={{
-                background: "#45d8dc",
+                background: "#3ecfb2",
                 animation: "stage-light 5.5s ease-in-out infinite",
                 animationDelay: `${i * 0.5}s`,
               }}
