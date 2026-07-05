@@ -117,7 +117,7 @@ const WAYPOINTS: Waypoint[] = [
 const D_DESKTOP =
   "M 500 0 C 690 210, 330 430, 480 650 C 615 845, 345 1020, 500 1230 C 655 1440, 365 1620, 500 1830 C 630 2030, 385 2215, 500 2430 C 595 2610, 445 2790, 500 3000";
 const D_MOBILE =
-  "M 150 0 C 210 280, 100 580, 160 880 C 215 1160, 105 1460, 155 1760 C 205 2060, 110 2380, 150 3000";
+  "M 80 0 C 140 280, 30 580, 90 880 C 145 1160, 35 1460, 85 1760 C 135 2060, 40 2380, 80 3000";
 
 const VB_W = 1000;
 const VB_H = 3000;
@@ -299,7 +299,7 @@ export default function OperatorProfile() {
       transition={{ duration: 0.4 }}
     >
       <section aria-label="Operator profile" className="reg-corners relative">
-        <div className="mx-auto max-w-6xl px-6 pt-28 md:px-10">
+        <div className="mx-auto max-w-6xl pl-16 pr-6 pt-28 md:px-10">
           <p className="font-mono text-[10px] tracking-[0.3em] text-amber">
             1100M · OPERATOR PROFILE — WHO&apos;S RUNNING THIS
           </p>
@@ -427,12 +427,12 @@ export default function OperatorProfile() {
                   className="absolute border border-line bg-panel/90 backdrop-blur-sm"
                   style={{
                     top: `${a.y}%`,
-                    width: panelW,
                     ...(isMobile
-                      ? { left: `calc(${a.x}% + 32px)` }
-                      : rightSide
-                        ? { right: 0 }
-                        : { left: 0 }),
+                      ? { left: `calc(${a.x}% + 20px)`, right: "16px" }
+                      : {
+                          width: panelW,
+                          ...(rightSide ? { right: 0 } : { left: 0 }),
+                        }),
                   }}
                 >
                   <div className="flex items-center justify-between border-b border-line px-5 py-2.5">
@@ -461,9 +461,9 @@ export default function OperatorProfile() {
                         </div>
                       )}
                     </div>
-                    <div className="mt-5 grid grid-cols-3 gap-px border border-line bg-line">
+                    <div className="mt-5 grid grid-cols-3 border-t border-line bg-line text-[9px]">
                       {wp.rows.map(([k, v]) => (
-                        <div key={k} className="bg-panel2 px-3 py-2">
+                        <div key={k} className="bg-panel/90 p-1.5 md:p-2.5 backdrop-blur-sm">
                           <p className="font-mono text-[8px] tracking-[0.2em] text-dim">{k}</p>
                           <p className="mt-1 font-mono text-[10px] text-bone">{v}</p>
                         </div>
