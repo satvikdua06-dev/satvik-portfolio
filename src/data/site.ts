@@ -3,8 +3,8 @@ export const SITE = {
   role: "SDE + AI",
   email: "satvikdua06@gmail.com",
   location: "Jaipur, IN",
-  github: "https://github.com/satvikdua",
-  linkedin: "https://www.linkedin.com/in/satvikdua",
+  github: "https://github.com/satvikdua06-dev",
+  linkedin: "https://www.linkedin.com/in/satvik-dua-5820481b4/",
   positioning:
     "I build robust computer vision systems, graph databases, and data infrastructure designed to run reliably under real-world constraints.",
   eyebrow: "B.TECH CCE · LNMIIT JAIPUR '28 — CV & DATA SYSTEMS INTERN @ ONGC",

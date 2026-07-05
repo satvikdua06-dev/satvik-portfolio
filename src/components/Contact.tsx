@@ -4,8 +4,8 @@ import { SITE, WELL_DEPTH_M } from "@/data/site";
 
 const CHANNELS = [
   { k: "EMAIL", v: SITE.email, href: `mailto:${SITE.email}` },
-  { k: "GITHUB", v: "github.com/satvikdua", href: SITE.github },
-  { k: "LINKEDIN", v: "in/satvikdua", href: SITE.linkedin },
+  { k: "GITHUB", v: "github.com/satvikdua06-dev", href: SITE.github },
+  { k: "LINKEDIN", v: "in/satvik-dua", href: SITE.linkedin },
   { k: "STATION", v: `${SITE.location} · 26.9124° N, 75.7873° E`, href: undefined },
 ];
 
