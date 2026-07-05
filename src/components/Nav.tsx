@@ -1,9 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { NAV_SECTIONS } from "@/data/site";
+
+const linkClass =
+  "group font-mono text-[10px] tracking-[0.25em] text-dim transition-colors hover:text-amber";
 
 /**
  * Top strip: wordmark + station links (desktop) + palette trigger.
+ * Entries with an href are routes (/operator); the rest are anchors.
  * On mobile the palette IS the menu.
  */
 export default function Nav() {
@@ -17,16 +22,24 @@ export default function Nav() {
         DUA<span className="text-amber">/</span>OS
       </a>
       <nav aria-label="Sections" className="hidden items-center gap-6 md:flex">
-        {NAV_SECTIONS.slice(1).map((s) => (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            className="group font-mono text-[10px] tracking-[0.25em] text-dim transition-colors hover:text-amber"
-          >
-            <span className="text-line group-hover:text-amber/60">{s.index}</span>{" "}
-            {s.label.toUpperCase()}
-          </a>
-        ))}
+        {NAV_SECTIONS.slice(1).map((s) =>
+          s.href ? (
+            <Link
+              key={s.id}
+              href={s.href}
+              onClick={() => sessionStorage.setItem("dua-return-y", String(window.scrollY))}
+              className={linkClass}
+            >
+              <span className="text-line group-hover:text-amber/60">{s.index}</span>{" "}
+              {s.label.toUpperCase()} ↗
+            </Link>
+          ) : (
+            <a key={s.id} href={`#${s.id}`} className={linkClass}>
+              <span className="text-line group-hover:text-amber/60">{s.index}</span>{" "}
+              {s.label.toUpperCase()}
+            </a>
+          )
+        )}
       </nav>
       <button
         type="button"

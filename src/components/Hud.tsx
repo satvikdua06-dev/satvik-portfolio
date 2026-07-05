@@ -41,15 +41,20 @@ export default function Hud() {
   const [depth, setDepth] = useState(0);
   const [time, setTime] = useState("--:--:--");
   const [sound, setSound] = useState(false);
+  const [vol, setVol] = useState(0.65);
   const [msg, setMsg] = useState<string | null>(null);
 
   useMotionValueEvent(scrollY, "change", (y) => {
-    setDepth(Math.round(getInterpDepth(y)));
+    const d = getInterpDepth(y);
+    setDepth(Math.round(d));
+    sfx.setDepth(d / WELL_DEPTH_M); // drone fundamental slides with the descent
   });
 
   useEffect(() => {
     let raf = 0;
     const update = () => {
+      setSound(sfx.isEnabled());
+      setVol(sfx.getVolume());
       setDepth(Math.round(getInterpDepth(window.scrollY)));
     };
     // Defer one frame to prevent synchronous render and hydration mismatch
@@ -64,7 +69,10 @@ export default function Hud() {
       );
     tick();
     const iv = setInterval(tick, 1000);
-    const unsub = sfx.subscribe(setSound);
+    const unsub = sfx.subscribe((on) => {
+      setSound(on);
+      setVol(sfx.getVolume());
+    });
     const onMsg = (e: Event) => {
       setMsg((e as CustomEvent<string>).detail);
       setTimeout(() => setMsg(null), 3200);
@@ -112,14 +120,35 @@ export default function Hud() {
           </div>
           <span className="text-dim tabular-nums">{pct}%</span>
         </div>
-        <button
-          type="button"
-          onClick={() => sfx.toggle()}
-          aria-pressed={sound}
-          className="mt-2 border border-line px-2 py-0.5 text-dim transition-colors hover:border-amber hover:text-amber"
-        >
-          SND {sound ? "◉ ON" : "○ OFF"}
-        </button>
+        <div className="mt-2 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => sfx.toggle()}
+            aria-pressed={sound}
+            className="border border-line px-2 py-0.5 text-dim transition-colors hover:border-amber hover:text-amber"
+          >
+            SND {sound ? "◉ ON" : "○ OFF"}
+          </button>
+          {sound && (
+            <div className="flex items-center gap-1.5 border border-line px-2 py-0.5 bg-panel/50 text-[8px] text-dim leading-none">
+              <span>VOL</span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={vol}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  sfx.setVolume(v);
+                  setVol(v);
+                }}
+                className="w-14 h-0.5 cursor-pointer accent-amber bg-line rounded appearance-none"
+              />
+              <span className="font-mono w-6 text-right tabular-nums">{Math.round(vol * 100)}%</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

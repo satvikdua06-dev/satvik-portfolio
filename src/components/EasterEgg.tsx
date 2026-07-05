@@ -20,7 +20,7 @@ export default function EasterEgg() {
       buffer = (buffer + e.key.toLowerCase()).slice(-5);
       if (buffer === "drill") {
         buffer = "";
-        sfx.confirm();
+        sfx.ping();
         window.dispatchEvent(
           new CustomEvent("hud:msg", { detail: "MANUAL OVERRIDE — DRILL MODE ENGAGED" })
         );

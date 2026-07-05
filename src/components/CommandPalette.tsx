@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { NAV_SECTIONS, PROJECTS, SITE } from "@/data/site";
 import { sfx } from "@/lib/audio";
@@ -12,7 +13,7 @@ interface Command {
   run: () => void;
 }
 
-function buildCommands(close: () => void): Command[] {
+function buildCommands(close: () => void, push: (href: string) => void): Command[] {
   const go = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     close();
@@ -20,9 +21,17 @@ function buildCommands(close: () => void): Command[] {
   return [
     ...NAV_SECTIONS.map((s) => ({
       id: s.id,
-      label: `Go to ${s.label}`,
-      hint: s.index,
-      run: () => go(s.id),
+      label: s.href ? `${s.label} Profile` : `Go to ${s.label}`,
+      hint: s.href ?? s.index,
+      run: () => {
+        if (s.href) {
+          sessionStorage.setItem("dua-return-y", String(window.scrollY));
+          push(s.href);
+          close();
+        } else {
+          go(s.id);
+        }
+      },
     })),
     ...PROJECTS.map((p) => ({
       id: p.id,
@@ -57,9 +66,10 @@ export default function CommandPalette() {
   const [query, setQuery] = useState("");
   const [sel, setSel] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const close = useCallback(() => setOpen(false), []);
 
-  const commands = buildCommands(close).filter((c) =>
+  const commands = buildCommands(close, router.push).filter((c) =>
     c.label.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -94,6 +104,7 @@ export default function CommandPalette() {
 
   useEffect(() => {
     if (open) {
+      sfx.click(); // the one interaction tick, on palette open
       const raf = requestAnimationFrame(() => inputRef.current?.focus());
       return () => cancelAnimationFrame(raf);
     }

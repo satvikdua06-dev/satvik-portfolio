@@ -30,8 +30,11 @@
 }
 
 html {
-  scroll-behavior: smooth;
   background: #0c0b08;
+}
+
+html.smooth-scroll {
+  scroll-behavior: smooth;
 }
 
 body {

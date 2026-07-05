@@ -3,6 +3,7 @@ import CanvasBackground from "@/components/CanvasBackground";
 import Chrome from "@/components/Chrome";
 import Hero from "@/components/Hero";
 import Philosophy from "@/components/Philosophy";
+import OperatorLink from "@/components/OperatorLink";
 import WorkContainer from "@/components/WorkContainer";
 import Stats from "@/components/Stats";
 import Contact from "@/components/Contact";
@@ -31,6 +32,7 @@ export default function Home() {
       <div className="relative z-10">
         <Hero />
         <Philosophy />
+        <OperatorLink />
 
         <section id="work" aria-label="Featured projects" className="border-t border-line">
           <div className="reg-corners px-6 py-20 md:px-10">

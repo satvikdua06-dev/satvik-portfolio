@@ -10,6 +10,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import type { Project } from "@/data/site";
+import { sfx } from "@/lib/audio";
 import TiltCard from "./TiltCard";
 import Readout from "./Readout";
 import { CameraWall, EtlTerminal, MarketplaceCard, ScadaStrip, StateMachine, SkillGraph } from "./ProjectVisuals";
@@ -156,13 +157,19 @@ export default function ProjectSection({ project }: { project: Project }) {
   const wrap = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState(0);
+  const phaseRef = useRef(0);
 
   const { scrollYProgress } = useScroll({ target: wrap, offset: ["start start", "end end"] });
   const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 26, mass: 0.4 });
   const barW = useTransform(smooth, [0, 1], ["0%", "100%"]);
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setPhase(Math.min(2, Math.max(0, Math.floor(v * 3))));
+    const next = Math.min(2, Math.max(0, Math.floor(v * 3)));
+    if (next !== phaseRef.current) {
+      phaseRef.current = next;
+      sfx.click(); // one consistent tick on tab switches
+      setPhase(next);
+    }
   });
 
   const phases = [project.problem, project.approach, project.outcome];

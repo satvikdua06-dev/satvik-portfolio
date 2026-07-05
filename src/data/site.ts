@@ -153,9 +153,18 @@ export const STATS = [
   { label: "Systems built", value: 5, suffix: "", detail: "Across CV, graph DBs, and full-stack" },
 ];
 
-export const NAV_SECTIONS = [
+export interface NavSection {
+  id: string;
+  label: string;
+  index: string;
+  /** present when the entry is a route, not an in-page anchor */
+  href?: string;
+}
+
+export const NAV_SECTIONS: NavSection[] = [
   { id: "hero", label: "Surface", index: "000m" },
   { id: "philosophy", label: "Doctrine", index: "740m" },
+  { id: "operator", label: "Operator", index: "1100m", href: "/operator" },
   { id: "work", label: "Operations", index: "1480m" },
   { id: "telemetry", label: "Telemetry", index: "3100m" },
   { id: "contact", label: "Uplink", index: "3842m" },

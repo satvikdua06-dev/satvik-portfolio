@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Project } from "@/data/site";
 import ProjectSection from "./ProjectSection";
@@ -12,6 +12,7 @@ interface Props {
 export default function WorkContainer({ projects }: Props) {
   const [activeId, setActiveId] = useState(projects[0]?.id || "");
   const [isWorkVisible, setIsWorkVisible] = useState(false);
+  const projectsListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Observer for active project item
@@ -38,24 +39,24 @@ export default function WorkContainer({ projects }: Props) {
       observers.set(p.id, observer);
     });
 
-    // Observer to toggle sidebar visibility only inside #work section
-    const workSection = document.getElementById("work");
-    let workObserver: IntersectionObserver | null = null;
-    if (workSection) {
-      workObserver = new IntersectionObserver(
+    // Observer to toggle sidebar visibility only inside projects list
+    const listEl = projectsListRef.current;
+    let listObserver: IntersectionObserver | null = null;
+    if (listEl) {
+      listObserver = new IntersectionObserver(
         ([entry]) => {
           setIsWorkVisible(entry.isIntersecting);
         },
         {
-          rootMargin: "-10% 0px -10% 0px",
+          rootMargin: "-120px 0px -10% 0px",
         }
       );
-      workObserver.observe(workSection);
+      listObserver.observe(listEl);
     }
 
     return () => {
       observers.forEach((obs) => obs.disconnect());
-      if (workObserver) workObserver.disconnect();
+      if (listObserver) listObserver.disconnect();
     };
   }, [projects]);
 
@@ -103,7 +104,7 @@ export default function WorkContainer({ projects }: Props) {
       </AnimatePresence>
 
       {/* Projects list taking up the full centered width */}
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
+      <div ref={projectsListRef} className="mx-auto max-w-6xl px-6 md:px-10">
         {projects.map((p) => (
           <ProjectSection key={p.id} project={p} />
         ))}
